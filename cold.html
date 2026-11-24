@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0c0d0b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CRJ Descent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<title>CRJ Cold Temp Corrections</title>
+<style>
+  :root {
+    --bg: #0c0d0b; --bg-card: #171914; --bg-input: #10120e; --line: #2a2e24;
+    --text: #e8e6d9; --muted: #9a9b8a; --amber: #e0b14a; --amber-dim: #8a6b22;
+    --green: #8fca7a; --red: #e07a5f; --blue: #8fb6d9; --touch: 48px; --radius: 12px;
+    --font: "SF Pro Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --mono: "SF Mono", "Menlo", "Consolas", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: var(--font); }
+  body { padding: 12px 14px calc(28px + env(safe-area-inset-bottom)); max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.25rem; font-weight: 650; letter-spacing: 0.02em; margin: 4px 0 2px; color: var(--amber); }
+  h1.brand { display: flex; align-items: center; gap: 10px; }
+  h1.brand img { width: 28px; height: 28px; border-radius: 7px; flex: none; }
+  .sub { color: var(--muted); font-size: 0.92rem; margin: 0 0 12px; line-height: 1.35; }
+  .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 8px 0 14px; }
+  .tabs a { display: flex; align-items: center; justify-content: center; min-height: 44px; border: 1px solid var(--line); border-radius: 10px; color: var(--text); text-decoration: none; font-weight: 600; background: var(--bg-input); }
+  .tabs a.on { border-color: var(--amber); color: var(--amber); background: #2a2414; }
+  section { background: var(--bg-card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; }
+  .label { font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; font-weight: 600; }
+  .seg { display: grid; gap: 6px; }
+  .seg.three { grid-template-columns: 1fr 1fr 1fr; }
+  .seg.two { grid-template-columns: 1fr 1fr; }
+  .seg.appr { grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 520px) { .seg.appr { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 380px) { .seg.appr { grid-template-columns: 1fr 1fr; } }
+  .seg button, .btn {
+    min-height: var(--touch); border: 1px solid var(--line); background: var(--bg-input); color: var(--text);
+    border-radius: 10px; font-size: 0.98rem; font-weight: 600; font-family: inherit; cursor: pointer; padding: 6px 8px; touch-action: manipulation;
+  }
+  .seg button small { display: block; font-weight: 500; color: var(--muted); font-size: 0.72rem; margin-top: 2px; line-height: 1.25; }
+  .seg button[aria-pressed="true"] { background: #2a2414; border-color: var(--amber); color: var(--amber); box-shadow: inset 0 0 0 1px var(--amber-dim); }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  @media (max-width: 420px) { .grid3 { grid-template-columns: 1fr 1fr; } }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field span { font-size: 0.8rem; color: var(--muted); }
+  input, select { min-height: var(--touch); background: var(--bg-input); color: var(--text); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; font-size: 1.05rem; font-family: var(--mono); width: 100%; }
+  select { font-family: var(--font); font-size: 0.98rem; }
+  input:focus, select:focus { outline: 2px solid var(--amber); outline-offset: 1px; }
+  .checks { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; }
+  @media (max-width: 520px) { .checks { grid-template-columns: 1fr; } }
+  .check { display: flex; align-items: center; gap: 10px; min-height: var(--touch); padding: 6px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg-input); font-size: 0.92rem; }
+  .check input { width: 22px; height: 22px; min-height: 0; accent-color: var(--amber); flex: none; }
+  .hint { font-size: 0.8rem; color: var(--muted); margin: 8px 0 0; line-height: 1.4; }
+  .alt-row { display: grid; grid-template-columns: 1.3fr 1fr 1fr var(--touch); gap: 6px; margin-bottom: 8px; }
+  @media (max-width: 460px) { .alt-row { grid-template-columns: 1fr 1fr; } .alt-row .rm { grid-column: 2; } }
+  .rm { color: var(--red); padding: 0; }
+  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+  .verdict { border-radius: 12px; padding: 14px; margin-bottom: 10px; border: 1px solid var(--line); background: var(--bg-input); }
+  .verdict .q { font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  .verdict .a { font-size: 2rem; font-weight: 800; letter-spacing: 0.04em; margin: 2px 0 4px; font-family: var(--mono); }
+  .verdict p { margin: 0; line-height: 1.4; }
+  .verdict .cite { color: var(--muted); font-size: 0.78rem; margin-top: 6px; }
+  .v-YES { border-color: var(--green); } .v-YES .a { color: var(--green); }
+  .v-NO { border-color: var(--red); } .v-NO .a { color: var(--red); }
+  .v-CHECK, .v-NA { border-color: var(--amber-dim); } .v-CHECK .a, .v-NA .a { color: var(--amber); }
+  .vgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 560px) { .vgrid { grid-template-columns: 1fr; } }
+  .alt-card { background: var(--bg-input); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; }
+  .alt-card.req { border-left: 4px solid var(--amber); }
+  .alt-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .alt-name { font-weight: 700; color: var(--amber); letter-spacing: 0.04em; }
+  .alt-kind { color: var(--muted); font-size: 0.8rem; }
+  .alt-nums { font-family: var(--mono); font-size: 1.25rem; font-weight: 700; margin: 6px 0 2px; }
+  .alt-nums .pub { color: var(--muted); font-size: 0.95rem; font-weight: 500; }
+  .alt-line { font-size: 0.85rem; line-height: 1.4; margin: 3px 0 0; }
+  .tag { display: inline-block; font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; margin-right: 6px; font-weight: 700; vertical-align: 1px; }
+  .tag.YES { color: var(--green); border-color: var(--green); } .tag.NO { color: var(--red); border-color: var(--red); }
+  .tag.CHECK, .tag.NA { color: var(--amber); border-color: var(--amber-dim); }
+  .tag.req { color: var(--amber); border-color: var(--amber); } .tag.notreq { color: var(--muted); }
+  .muted { color: var(--muted); }
+  .small { font-size: 0.78rem; }
+  ul.conds { margin: 0; padding-left: 18px; } ul.conds li { margin-bottom: 8px; line-height: 1.4; font-size: 0.92rem; }
+  ul.conds .cite { display: block; color: var(--muted); font-size: 0.76rem; }
+  .banner { padding: 12px 14px; border-radius: 10px; margin-bottom: 10px; font-size: 0.95rem; line-height: 1.4; }
+  .banner.warn { background: #3a1d16; border: 1px solid var(--red); color: #ffc8b8; }
+  .banner.note { background: #1c1a12; border: 1px solid var(--amber-dim); }
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { border-collapse: collapse; font-family: var(--mono); font-size: 0.8rem; min-width: 560px; width: 100%; }
+  th, td { border-bottom: 1px solid var(--line); padding: 6px 4px; text-align: right; }
+  th { color: var(--muted); font-family: var(--font); font-weight: 600; }
+  td.shade { background: #22241d; }
+  details summary { cursor: pointer; color: var(--amber); font-weight: 600; min-height: 36px; display: flex; align-items: center; }
+  footer { color: var(--muted); font-size: 0.8rem; text-align: center; margin: 18px 8px 8px; line-height: 1.4; }
+  .pm { display: grid; grid-template-columns: 44px 1fr; gap: 4px; }
+  .pmb { padding: 0; font-size: 1.15rem; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+  <h1 class="brand"><img src="icon-192.png" width="28" height="28" alt="">Cold Temp Corrections</h1>
+  <p class="sub">Jazz CRJ900 cold-temperature altimeter corrections from the QRH table, and whether to put them on the FMS LEGS page.</p>
+  <nav class="tabs" aria-label="Pages">
+    <a href="./">Descent planner</a>
+    <a href="cold.html" class="on" aria-current="page">Cold temp</a>
+  </nav>
+
+  <div class="banner note"><b>Verify against the COM / AOM / QRH.</b> This page is built from COM Rev 31 §4.7.6, CRJ AOM Vol II and the CRJ900 QRH (OPERATIONS-1/-2) as of Nov 2026. Where the manuals are silent the answer is <b>CHECK MANUAL</b>.</div>
+
+  <section>
+    <p class="label">Aircraft FMS</p>
+    <div class="seg three" id="fmsSeg" role="radiogroup" aria-label="FMS"></div>
+    <p class="hint">Tell them apart by fin number (701–716 = FMS 99, 717–730 = CRJ900 NG with FMS 4.2) or on the FMS STATUS page: NAV DATA <b>J4 AMERICA</b> = FMS 99, <b>J8-AMERICA</b> = FMS 4.2. (AOM Vol II 1.1.2, 4.5.2 4), 10.2.1)</p>
+  </section>
+
+  <section>
+    <p class="label">Approach / procedure type</p>
+    <div class="seg appr" id="apprSeg" role="radiogroup" aria-label="Approach type"></div>
+  </section>
+
+  <section>
+    <p class="label">Airport and conditions</p>
+    <div class="grid3">
+      <label class="field"><span>Airport (ICAO, optional)</span><input id="icao" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="CYWG"></label>
+      <div class="field"><span>Airport temp (°C)</span><span class="pm"><button type="button" class="btn pmb" data-pm="tempC" aria-label="Toggle minus">±</button><input id="tempC" inputmode="numeric" placeholder="−20"></span></div>
+      <label class="field"><span>Aerodrome elev (ft)</span><input id="elevFt" inputmode="numeric" placeholder="783"></label>
+    </div>
+    <p class="hint" id="elevHint">The altimeter source is taken as the aerodrome elevation (COM 4.7.6). Tap ± to make a temperature negative (the iPhone number pad has no minus key).</p>
+    <div class="seg two" id="countrySeg" style="margin-top:10px" role="radiogroup" aria-label="Country">
+      <button type="button" data-val="CA" aria-pressed="true">Canada</button>
+      <button type="button" data-val="US" aria-pressed="false">USA</button>
+    </div>
+    <div id="usBox" class="hidden" style="margin-top:10px">
+      <div class="field"><span>CTA temperature from the Jeppesen briefing strip (°C, blank if none)</span><span class="pm"><button type="button" class="btn pmb" data-pm="ctaTemp" aria-label="Toggle minus">±</button><input id="ctaTemp" inputmode="numeric" placeholder="e.g. −10"></span></div>
+    </div>
+    <div class="seg two" id="wxSeg" style="margin-top:10px" role="radiogroup" aria-label="Conditions">
+      <button type="button" data-val="imc" aria-pressed="true">IMC or night VMC</button>
+      <button type="button" data-val="day" aria-pressed="false">Day VMC</button>
+    </div>
+    <div id="tlimBox" class="hidden" style="margin-top:10px">
+      <p class="label">Baro-VNAV TLIM from the plate</p>
+      <div class="grid2">
+        <div class="field"><span>TLIM low (°C)</span><span class="pm"><button type="button" class="btn pmb" data-pm="tlimLo" aria-label="Toggle minus">±</button><input id="tlimLo" inputmode="numeric" placeholder="e.g. −22"></span></div>
+        <label class="field"><span>TLIM high (°C)</span><input id="tlimHi" inputmode="numeric" placeholder="e.g. 54"></label>
+      </div>
+    </div>
+    <div class="checks">
+      <label class="check"><input type="checkbox" id="radar"> Under radar control (MSA/TAA)</label>
+      <label class="check"><input type="checkbox" id="dh"> Minima are a radio-altitude DH</label>
+      <label class="check"><input type="checkbox" id="scda"> Flying it as a VS SCDA</label>
+      <label class="check"><input type="checkbox" id="iafStar"> IAF is the STAR interface waypoint</label>
+      <label class="check"><input type="checkbox" id="atc"> Altitudes superseded by an ATC-assigned altitude</label>
+    </div>
+  </section>
+
+  <section>
+    <p class="label">Published altitudes</p>
+    <div id="altList"></div>
+    <div class="actions">
+      <button type="button" class="btn" id="addAlt">+ Add altitude</button>
+      <button type="button" class="btn" id="resetAlt" style="color:var(--muted)">Reset list</button>
+    </div>
+    <p class="label" style="margin-top:14px">Between table values</p>
+    <div class="seg two" id="methodSeg" role="radiogroup" aria-label="Table method">
+      <button type="button" data-val="interp" aria-pressed="true">Interpolate<small>straight-line between rows and columns</small></button>
+      <button type="button" data-val="conservative" aria-pressed="false">Conservative<small>next colder row, next higher column</small></button>
+    </div>
+    <p class="hint">The QRH doesn't say how to read between table values, so pick a method. Either way the result is rounded up to the next 10 ft.</p>
+  </section>
+
+  <div id="err" class="banner warn hidden"></div>
+  <div id="out"></div>
+
+  <section>
+    <details>
+      <summary>QRH correction table (OPERATIONS-1)</summary>
+      <div class="table-wrap" id="qrhTable"></div>
+      <p class="hint">Airport temp °C vs height above altimeter source. Values are added to published minimum IFR altitudes, already rounded up to the next 10 ft. Shaded = not published. Source: CRJ900 QRH OPERATIONS-1, Rev 19, 15 May 2025. Above 5,000 ft or colder than −50°C the page uses the ICAO PANS-OPS (Doc 8168) formula, labelled, because the Jazz manuals give no method there.</p>
+    </details>
+  </section>
+
+  <section>
+    <details>
+      <summary>Where the manuals are silent</summary>
+      <ul class="conds small">
+        <li>NDB, visual, STAR and (FMS 99) SID legs are not in the QRH “FMS Temperature Corrected Altitudes” table, so the answer is CHECK MANUAL.</li>
+        <li>Whether FMS 99 has a TEMP COMP function (COM 4.7.6.4 says use it “if available”).</li>
+        <li>Whether the Canadian +10°C trigger (DA/MDA ≥ 1,000 ft AAE) applies to approach altitudes as well as DA/MDA. The COM table groups them, but §4.7.6.3 names only DA/MDA.</li>
+        <li>How to read between table values, heights below 200 ft or above 5,000 ft, and temperatures colder than −50°C.</li>
+        <li>Procedure-turn altitude is not listed separately in COM 4.7.6.6, so the page treats it as an approach altitude.</li>
+        <li>No fleet-wide numeric Baro-VNAV minimum temperature. The TLIM comes from each plate.</li>
+        <li>Whether a corrected DA/MDA goes anywhere on LEGS. It is a minimums setting.</li>
+      </ul>
+    </details>
+  </section>
+
+  <footer>Planning aid only. Not an approved source. Verify against the current COM, AOM and QRH.<br><a href="./" style="color:var(--amber)">Back to the descent planner</a></footer>
+
+<script src="coldtemp.js?v=1"></script>
+<script>
+(function () {
+  const C = globalThis.CRJColdTemp;
+  const $ = (id) => document.getElementById(id);
+  const STORE = "crj-coldtemp-v1";
+  const DEFAULT_ALTS = [
+    { kind: "iaf", name: "", altFt: "" },
+    { kind: "if", name: "", altFt: "" },
+    { kind: "faf", name: "", altFt: "" },
+    { kind: "daMda", name: "", altFt: "" },
+    { kind: "missed", name: "", altFt: "" },
+  ];
+  let st = {
+    fms: "unknown", approach: "ils", country: "CA", wx: "imc", method: "interp",
+    icao: "", tempC: "", elevFt: "", ctaTemp: "", tlimLo: "", tlimHi: "",
+    radar: false, dh: false, scda: false, iafStar: false, atc: false,
+    alts: DEFAULT_ALTS.map((a) => Object.assign({}, a)),
+  };
+  try { const s = JSON.parse(localStorage.getItem(STORE) || "null"); if (s && s.alts) st = Object.assign(st, s); } catch (e) {}
+  const save = () => { try { localStorage.setItem(STORE, JSON.stringify(st)); } catch (e) {} };
+
+  let elevDb = null;
+  fetch("airport_elevations.json").then((r) => (r.ok ? r.json() : null)).then((j) => { elevDb = j && j.elevation_ft; }).catch(() => {});
+
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+  function num(s) {
+    if (s == null) return NaN;
+    const t = String(s).trim().replace(/[\u2212\u2013]/g, "-").replace(/^[mM]/, "-").replace(/,/g, "");
+    if (t === "" || t === "-") return NaN;
+    return Number(t);
+  }
+  const fmt = (n) => Math.round(n).toLocaleString("en-US");
+
+  function seg(id, items, key) {
+    const box = $(id);
+    if (items) box.innerHTML = items.map((o) => `<button type="button" data-val="${o.id}">${esc(o.label)}${o.sub ? `<small>${esc(o.sub)}</small>` : ""}</button>`).join("");
+    const paint = () => box.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.val === st[key])));
+    box.addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; st[key] = b.dataset.val; paint(); render(); });
+    paint();
+  }
+  seg("fmsSeg", C.FMS_OPTIONS, "fms");
+  seg("apprSeg", C.APPROACH_OPTIONS, "approach");
+  seg("countrySeg", null, "country");
+  seg("wxSeg", null, "wx");
+  seg("methodSeg", null, "method");
+
+  ["icao", "tempC", "elevFt", "ctaTemp", "tlimLo", "tlimHi"].forEach((id) => { $(id).value = st[id] || ""; });
+  ["radar", "dh", "scda", "iafStar", "atc"].forEach((id) => { $(id).checked = !!st[id]; $(id).addEventListener("change", () => { st[id] = $(id).checked; render(); }); });
+  ["tempC", "elevFt", "ctaTemp", "tlimLo", "tlimHi"].forEach((id) => $(id).addEventListener("input", () => { st[id] = $(id).value; render(); }));
+  document.querySelectorAll("[data-pm]").forEach((b) => b.addEventListener("click", (e) => {
+    e.preventDefault();
+    const id = b.dataset.pm; let v = String($(id).value || "").trim().replace(/[\u2212\u2013]/g, "-");
+    v = v.startsWith("-") ? v.slice(1) : "-" + v;
+    $(id).value = v; st[id] = v; render();
+  }));
+  $("icao").addEventListener("input", () => {
+    const v = $("icao").value.trim().toUpperCase(); st.icao = v;
+    if (v.length === 4 && elevDb && elevDb[v] != null) {
+      st.elevFt = String(elevDb[v]); $("elevFt").value = st.elevFt;
+      $("elevHint").textContent = v + " elevation " + fmt(elevDb[v]) + " ft from the app's airport list. Check it against the plate.";
+    }
+    if (v.length === 4 && /^C/.test(v)) st.country = "CA";
+    if (v.length === 4 && /^K/.test(v)) st.country = "US";
+    $("countrySeg").querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.val === st.country)));
+    render();
+  });
+
+  const KIND_OPTS = C.ALT_KINDS.map((k) => `<option value="${k.id}">${esc(k.label)}</option>`).join("");
+  function drawAlts() {
+    $("altList").innerHTML = st.alts.map((a, i) => `
+      <div class="alt-row" data-i="${i}">
+        <select data-f="kind" aria-label="Altitude type">${KIND_OPTS}</select>
+        <input data-f="name" placeholder="Fix (opt.)" autocapitalize="characters" autocomplete="off" spellcheck="false" value="${esc(a.name)}">
+        <input data-f="altFt" inputmode="numeric" placeholder="Alt ft" value="${esc(a.altFt)}">
+        <button type="button" class="btn rm" data-rm="${i}" aria-label="Remove">✕</button>
+      </div>`).join("");
+    $("altList").querySelectorAll(".alt-row").forEach((row) => { row.querySelector("select").value = st.alts[+row.dataset.i].kind; });
+  }
+  $("altList").addEventListener("input", (e) => {
+    const row = e.target.closest(".alt-row"); if (!row) return;
+    const a = st.alts[+row.dataset.i]; const f = e.target.dataset.f;
+    a[f] = f === "name" ? e.target.value.toUpperCase() : e.target.value; render();
+  });
+  $("altList").addEventListener("change", (e) => { if (e.target.dataset.f === "kind") { st.alts[+e.target.closest(".alt-row").dataset.i].kind = e.target.value; render(); } });
+  $("altList").addEventListener("click", (e) => { const b = e.target.closest("[data-rm]"); if (!b) return; st.alts.splice(+b.dataset.rm, 1); drawAlts(); render(); });
+  $("addAlt").addEventListener("click", () => { st.alts.push({ kind: "stepdown", name: "", altFt: "" }); drawAlts(); render(); });
+  $("resetAlt").addEventListener("click", () => { st.alts = DEFAULT_ALTS.map((a) => Object.assign({}, a)); drawAlts(); render(); });
+
+  function drawTable() {
+    const h = C.TABLE_HEIGHTS_FT, rows = C.TABLE;
+    let s = "<table><thead><tr><th>°C</th>" + h.map((x) => `<th>${x}</th>`).join("") + "</tr></thead><tbody>";
+    rows.forEach((r, i) => { s += `<tr><th>${C.TABLE_TEMPS_C[i] > 0 ? "+" : ""}${C.TABLE_TEMPS_C[i]}</th>` + r.map((v) => (v == null ? '<td class="shade"></td>' : `<td>${v}</td>`)).join("") + "</tr>"; });
+    $("qrhTable").innerHTML = s + "</tbody></table>";
+  }
+
+  const ANS_TEXT = { YES: "YES", NO: "NO", CHECK: "CHECK MANUAL", "N/A": "N/A" };
+  const vcls = (a) => "v-" + (a === "N/A" ? "NA" : a);
+  const tcls = (a) => (a === "N/A" ? "NA" : a);
+
+  function verdict(q, v) {
+    return `<div class="verdict ${vcls(v.answer)}"><div class="q">${esc(q)}</div><div class="a">${ANS_TEXT[v.answer] || v.answer}</div><p>${esc(v.reason)}</p><div class="cite">${esc(v.cite)}</div></div>`;
+  }
+  function reqTag(r) {
+    if (r.required === true) return '<span class="tag req">Correct</span>';
+    if (r.required === false) return '<span class="tag notreq">Not required</span>';
+    return '<span class="tag CHECK">Check manual</span>';
+  }
+
+  function render() {
+    $("usBox").classList.toggle("hidden", st.country !== "US");
+    $("tlimBox").classList.toggle("hidden", st.approach !== "lnavvnav");
+    save();
+    const input = {
+      fms: st.fms, approach: st.approach, country: st.country,
+      tempC: num(st.tempC), elevFt: num(st.elevFt),
+      ctaTempC: isFinite(num(st.ctaTemp)) ? num(st.ctaTemp) : null,
+      tlimLowC: isFinite(num(st.tlimLo)) ? num(st.tlimLo) : null,
+      tlimHighC: isFinite(num(st.tlimHi)) ? num(st.tlimHi) : null,
+      imcOrNight: st.wx !== "day", radar: st.radar, minimaIsDH: st.dh, scda: st.scda,
+      iafIsStarInterface: st.iafStar, atcAssigned: st.atc, method: st.method,
+      altitudes: st.alts.map((a) => ({ kind: a.kind, name: a.name, altFt: isFinite(num(a.altFt)) ? num(a.altFt) : "" })),
+    };
+    // Verdicts can show without temps; corrections need temp + elevation.
+    const apprName = (C.APPROACH_OPTIONS.find((o) => o.id === st.approach) || {}).label;
+    const fmsName = (C.FMS_OPTIONS.find((o) => o.id === st.fms) || {}).label;
+    let html = `<section><p class="label">Enter on FMS LEGS? · ${esc(fmsName)} · ${esc(apprName)}</p><div class="vgrid">`;
+    html += verdict(st.approach === "sid" ? "SID altitudes" : st.approach === "star" ? "STAR altitudes" : "Approach altitudes (IAF/IF/step-downs/FAF)", C.legsForApproach(st.fms, st.approach));
+    if (st.approach !== "sid" && st.approach !== "star") html += verdict("Missed approach altitudes", C.legsForMissed(st.fms));
+    html += "</div>";
+
+    const r = isFinite(input.tempC) && isFinite(input.elevFt) ? C.evaluate(input) : null;
+    if (r && r.ok && r.tlim) {
+      html += r.tlim.inside
+        ? `<div class="banner note">${input.tempC}°C is inside the TLIM (${r.tlim.low}°C${r.tlim.high != null ? " to " + r.tlim.high + "°C" : ""}). LNAV/VNAV with Baro-VNAV is allowed as long as no corrected altitudes are entered for the final approach segment. (AOM Vol II 2.7.3 8), 4.5.2 3))</div>`
+        : `<div class="banner warn">${input.tempC}°C is OUTSIDE the TLIM (${r.tlim.low}°C${r.tlim.high != null ? " to " + r.tlim.high + "°C" : ""}). LNAV/VNAV minima using Baro-VNAV can't be flown, and TEMP COMP is prohibited on FMS 4.2. (AOM Vol II 2.7.3 8), 4.5.2 3); COM 4.7.6.9)</div>`;
+    }
+    html += "</section>";
+
+    if (!r) {
+      $("err").classList.add("hidden");
+      html += `<section><p class="muted" style="margin:0">Enter the airport temperature and aerodrome elevation to get corrected altitudes.</p></section>`;
+    } else if (!r.ok) {
+      $("err").textContent = r.errors.join(" "); $("err").classList.remove("hidden");
+    } else {
+      $("err").classList.add("hidden");
+      const q = r.requirements;
+      html += `<section><p class="label">Is compensation required? · ${r.tempC}°C · elev ${fmt(r.elevFt)} ft</p>`;
+      html += `<p class="alt-line">${reqTag(q.approach)}<b>Approach altitudes</b>: ${esc(q.approach.reason)} <span class="muted small">${esc(q.approach.cite)}</span></p>`;
+      html += `<p class="alt-line">${reqTag(q.minima)}<b>DA/MDA</b>: ${esc(q.minima.reason)} <span class="muted small">${esc(q.minima.cite)}</span></p>`;
+      html += `<p class="alt-line">${reqTag(q.missed)}<b>Missed approach</b>: ${esc(q.missed.reason)} <span class="muted small">${esc(q.missed.cite)}</span></p>`;
+      html += `<p class="alt-line">${reqTag(q.msa)}<b>MSA/TAA/100 NM</b>: ${esc(q.msa.reason)} <span class="muted small">${esc(q.msa.cite)}</span></p></section>`;
+
+      html += `<section><p class="label">Corrected altitudes</p>`;
+      if (!r.rows.length) html += `<p class="muted" style="margin:0">Add the published altitudes above.</p>`;
+      r.rows.forEach((row) => {
+        const req = row.required === true;
+        html += `<div class="alt-card${req ? " req" : ""}">
+          <div class="alt-head"><span class="alt-name">${esc(row.name)}</span><span class="alt-kind">${esc(row.kindLabel)} · ${fmt(row.height_above_source_ft)} ft above source</span></div>
+          <div class="alt-nums">${row.required === false ? `${fmt(row.published_ft)} <span class="pub">published · corrected would be ${fmt(row.corrected_ft)} (+${row.correction_ft})</span>` : `${fmt(row.corrected_ft)} <span class="pub">← ${fmt(row.published_ft)} + ${row.correction_ft}</span>`}</div>
+          <p class="alt-line">${reqTag(row)}${esc(row.required_reason)} <span class="muted small">${esc(row.required_cite)}</span></p>
+          <p class="alt-line"><span class="tag ${tcls(row.legs.answer)}">LEGS ${ANS_TEXT[row.legs.answer] || row.legs.answer}</span>${esc(row.legs.reason)}</p>
+          <p class="alt-line muted small">${esc(row.source)}${row.notes.length ? " · " + row.notes.map(esc).join(" · ") : ""}</p>
+        </div>`;
+      });
+      html += `</section>`;
+
+      html += `<section><p class="label">Conditions and procedures</p><ul class="conds">` +
+        r.conditions.map((c) => `<li>${esc(c.text)}<span class="cite">${esc(c.cite)}</span></li>`).join("") + `</ul></section>`;
+    }
+    $("out").innerHTML = html;
+  }
+
+  drawAlts(); drawTable(); render();
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+})();
+</script>
+</body>
+</html>

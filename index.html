@@ -171,12 +171,19 @@
   @media (max-width: 420px) {
     .arrival-pick { grid-template-columns: 1fr; }
   }
+  .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 4px 0 14px; }
+  .tabs a { display: flex; align-items: center; justify-content: center; min-height: 44px; border: 1px solid var(--line); border-radius: 10px; color: var(--text); text-decoration: none; font-weight: 600; background: var(--bg-input); }
+  .tabs a.on { border-color: var(--amber); color: var(--amber); background: #2a2414; }
 </style>
 </head>
 <body>
   <div id="updateNote" class="banner note" role="status"></div>
   <h1 class="brand"><img src="icon-192.png" width="28" height="28" alt="">CRJ900 Idle Descent</h1>
   <p class="sub">Plan waypoint crossings and slowdowns from your present altitude. Line technique, not VNAV.</p>
+  <nav class="tabs" aria-label="Pages">
+    <a href="./" class="on" aria-current="page">Descent planner</a>
+    <a href="cold.html">Cold temp</a>
+  </nav>
 
   <section>
     <p class="label">Landing weight</p>
@@ -267,16 +274,16 @@
   <div id="error" class="error hidden"></div>
   <div id="results" class="hidden" style="margin-top:16px"></div>
 
-  <footer>Planning aid only, based on line technique. Not an approved performance source.<br>Version <span class="ver" id="appVersion">3.0</span></footer>
+  <footer>Planning aid only, based on line technique. Not an approved performance source.<br>Version <span class="ver" id="appVersion">3.1</span></footer>
 
-<script src="planner.js?v=3.0"></script>
-<script src="cifp.js?v=3.0"></script>
+<script src="planner.js?v=3.1"></script>
+<script src="cifp.js?v=3.1"></script>
 <script>
 (function () {
-  const APP_VERSION = "3.0";
+  const APP_VERSION = "3.1";
   const P = globalThis.CRJPlanner;
-  const STORE = "crj-descent-plan-v3.0";
-  const STORE_OLD = ["crj-descent-plan-v2.9", "crj-descent-plan-v2.8", "crj-descent-plan-v2.7", "crj-descent-plan-v2.6", "crj-descent-plan-v2.5", "crj-descent-plan-v2.4", "crj-descent-plan-v2.3", "crj-descent-plan-v2.2", "crj-descent-plan-v2", "crj-descent-plan-v1"];
+  const STORE = "crj-descent-plan-v3.1";
+  const STORE_OLD = ["crj-descent-plan-v3.0", "crj-descent-plan-v2.9", "crj-descent-plan-v2.8", "crj-descent-plan-v2.7", "crj-descent-plan-v2.6", "crj-descent-plan-v2.5", "crj-descent-plan-v2.4", "crj-descent-plan-v2.3", "crj-descent-plan-v2.2", "crj-descent-plan-v2", "crj-descent-plan-v1"];
   const SEEN = "crj-descent-seen-version";
   const $ = (id) => document.getElementById(id);
   $("appVersion").textContent = APP_VERSION;
@@ -988,7 +995,7 @@
     if (canadaManifest) {
       const a = Cifp.formatCycleDate(canadaManifest.effective);
       const b = Cifp.formatCycleDate(canadaManifest.expires);
-      capEl.textContent = "NAV CANADA CAP cycle " + (canadaManifest.cycle || "") + " · " + a + " to " + b + ". CYYC, CYWG and CYVR arrivals auto-fill from the CAP plates; other Canadian airports are entered manually.";
+      capEl.textContent = "NAV CANADA CAP cycle " + (canadaManifest.cycle || "") + " · " + a + " to " + b + ". CYYC, CYWG, CYVR, CYYZ and CYUL arrivals auto-fill from the CAP plates; other Canadian airports are entered manually.";
       if (Cifp.cycleIsExpired(canadaManifest)) {
         capEl.classList.add("expired");
         expiredBits.push("The NAV CANADA CAP cycle expired on " + b + " (0901Z).");

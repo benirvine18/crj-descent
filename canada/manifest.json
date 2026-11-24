@@ -8,7 +8,7 @@
   "source": "NAV CANADA CAP plates (ForeFlight cycle 2611), chart-extracted",
   "source_url": "https://cloudfront.foreflight.com/plates/2611/",
   "airport_count": 13,
-  "star_count": 18,
+  "star_count": 29,
   "airports": {
     "CYEG": {
       "name": "Edmonton Intl",
@@ -72,7 +72,91 @@
       "province": "QC",
       "major": true,
       "from_flight_history": true,
-      "stars": {}
+      "stars": {
+        "ALOET4": {
+          "title": "ALOET 4",
+          "transitions": [
+            "AVVON"
+          ],
+          "runways": [
+            "RW06L",
+            "RW06R",
+            "RW24L",
+            "RW24R"
+          ],
+          "chart_extracted": true
+        },
+        "CARTR5": {
+          "title": "CARTER 5",
+          "transitions": [
+            "PBERG"
+          ],
+          "runways": [
+            "RW06L",
+            "RW06R",
+            "RW24L",
+            "RW24R"
+          ],
+          "chart_extracted": true
+        },
+        "HABBS7": {
+          "title": "HABBS 7",
+          "transitions": [
+            "MIGLO"
+          ],
+          "runways": [
+            "RW06L",
+            "RW06R",
+            "RW24L",
+            "RW24R"
+          ],
+          "chart_extracted": true
+        },
+        "IMPAC4": {
+          "title": "IMPACT 4",
+          "transitions": [
+            "ART"
+          ],
+          "runways": [
+            "RW06L",
+            "RW06R",
+            "RW24L",
+            "RW24R"
+          ],
+          "chart_extracted": true
+        },
+        "LFLER7": {
+          "title": "LAFLEUR 7",
+          "transitions": [
+            "BEMOG",
+            "IKMOL",
+            "OBRET",
+            "VIDGO"
+          ],
+          "runways": [
+            "RW06L",
+            "RW06R",
+            "RW24L",
+            "RW24R"
+          ],
+          "chart_extracted": true
+        },
+        "ROCKT3": {
+          "title": "ROCKET 3",
+          "transitions": [
+            "KEBIG",
+            "TIBOS",
+            "VIVOG"
+          ],
+          "runways": [
+            "RW06L",
+            "RW06R",
+            "RW24L",
+            "RW24R"
+          ],
+          "chart_extracted": true
+        }
+      }
     },
     "CYVR": {
       "name": "Vancouver Intl",
@@ -398,7 +482,116 @@
       "province": "ON",
       "major": true,
       "from_flight_history": true,
-      "stars": {}
+      "stars": {
+        "BOXUM7": {
+          "title": "BOXUM 7",
+          "transitions": [
+            "IRKIM",
+            "OTNIK",
+            "TUDAN"
+          ],
+          "runways": [
+            "RW05",
+            "RW06L",
+            "RW06R",
+            "RW15L",
+            "RW15R",
+            "RW23",
+            "RW24L",
+            "RW24R",
+            "RW33L",
+            "RW33R"
+          ],
+          "chart_extracted": true
+        },
+        "IMEBA9": {
+          "title": "IMEBA 9",
+          "transitions": [
+            "LETAK",
+            "POLTY",
+            "ROSVO",
+            "TUKIR"
+          ],
+          "runways": [
+            "RW05",
+            "RW06L",
+            "RW06R",
+            "RW15L",
+            "RW15R",
+            "RW23",
+            "RW24L",
+            "RW24R",
+            "RW33L",
+            "RW33R"
+          ],
+          "chart_extracted": true
+        },
+        "LINNG3": {
+          "title": "LINNG 3",
+          "transitions": [
+            "LOKPU",
+            "OXMAN",
+            "WOZEE"
+          ],
+          "runways": [
+            "RW05",
+            "RW06L",
+            "RW06R",
+            "RW15L",
+            "RW15R",
+            "RW23",
+            "RW24L",
+            "RW24R",
+            "RW33L",
+            "RW33R"
+          ],
+          "chart_extracted": true
+        },
+        "NUBER6": {
+          "title": "NUBER 6",
+          "transitions": [
+            "APDAX",
+            "FINGL",
+            "MONEE",
+            "QWERI",
+            "YZEMN"
+          ],
+          "runways": [
+            "RW05",
+            "RW06L",
+            "RW06R",
+            "RW15L",
+            "RW15R",
+            "RW23",
+            "RW24L",
+            "RW24R",
+            "RW33L",
+            "RW33R"
+          ],
+          "chart_extracted": true
+        },
+        "RAGID6": {
+          "title": "RAGID 6",
+          "transitions": [
+            "TORNI",
+            "TUKIR",
+            "UDNOX"
+          ],
+          "runways": [
+            "RW05",
+            "RW06L",
+            "RW06R",
+            "RW15L",
+            "RW15R",
+            "RW23",
+            "RW24L",
+            "RW24R",
+            "RW33L",
+            "RW33R"
+          ],
+          "chart_extracted": true
+        }
+      }
     }
   },
   "changes_this_cycle": [
@@ -483,5 +676,5 @@
       "change": "revised"
     }
   ],
-  "limitations": "Canadian STARs for CYYC, CYWG and CYVR in this file are chart-extracted from NAV CANADA CAP plates (ForeFlight cycle 2611). Other Canadian airports still need manual entry. Check every restriction and distance against the current plate."
+  "limitations": "Canadian STARs for CYYC, CYWG, CYVR, CYYZ and CYUL in this file are chart-extracted from NAV CANADA CAP plates (ForeFlight cycle 2611). Other Canadian airports still need manual entry. Check every restriction and distance against the current plate."
 }
