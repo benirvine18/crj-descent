@@ -1,0 +1,13 @@
+{
+  "manifest_bytes": 196100,
+  "stars_json_bytes": 3273049,
+  "stars_gz_bytes": 423413,
+  "airport_files": 494,
+  "airport_bytes_total": 3299013,
+  "largest_airport": "KDEN",
+  "largest_airport_bytes": 66550,
+  "cycle": "2611",
+  "cycle_file": "261029",
+  "effective": "2026-10-29",
+  "expires": "2026-11-26"
+}

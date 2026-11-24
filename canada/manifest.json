@@ -1,0 +1,487 @@
+{
+  "cycle": "261029",
+  "cycle_file": "2611",
+  "effective": "2026-10-29",
+  "expires": "2026-12-24",
+  "effective_utc": "2026-10-29T09:01:00Z",
+  "expires_utc": "2026-12-24T09:01:00Z",
+  "source": "NAV CANADA CAP plates (ForeFlight cycle 2611), chart-extracted",
+  "source_url": "https://cloudfront.foreflight.com/plates/2611/",
+  "airport_count": 13,
+  "star_count": 18,
+  "airports": {
+    "CYEG": {
+      "name": "Edmonton Intl",
+      "iata": "YEG",
+      "province": "AB",
+      "major": true,
+      "from_flight_history": false,
+      "stars": {}
+    },
+    "CYFC": {
+      "name": "Fredericton Intl",
+      "iata": "YFC",
+      "province": "NB",
+      "major": false,
+      "from_flight_history": true,
+      "stars": {}
+    },
+    "CYHZ": {
+      "name": "Halifax/Stanfield Intl",
+      "iata": "YHZ",
+      "province": "NS",
+      "major": true,
+      "from_flight_history": false,
+      "stars": {}
+    },
+    "CYOW": {
+      "name": "Ottawa/Macdonald-Cartier Intl",
+      "iata": "YOW",
+      "province": "ON",
+      "major": true,
+      "from_flight_history": true,
+      "stars": {}
+    },
+    "CYQB": {
+      "name": "Québec/Jean Lesage Intl",
+      "iata": "YQB",
+      "province": "QC",
+      "major": true,
+      "from_flight_history": false,
+      "stars": {}
+    },
+    "CYQR": {
+      "name": "Regina Intl",
+      "iata": "YQR",
+      "province": "SK",
+      "major": false,
+      "from_flight_history": true,
+      "stars": {}
+    },
+    "CYQY": {
+      "name": "Sydney/J.A. Douglas McCurdy",
+      "iata": "YQY",
+      "province": "NS",
+      "major": false,
+      "from_flight_history": true,
+      "stars": {}
+    },
+    "CYUL": {
+      "name": "Montréal/Pierre Elliott Trudeau Intl",
+      "iata": "YUL",
+      "province": "QC",
+      "major": true,
+      "from_flight_history": true,
+      "stars": {}
+    },
+    "CYVR": {
+      "name": "Vancouver Intl",
+      "iata": "YVR",
+      "province": "BC",
+      "major": true,
+      "from_flight_history": false,
+      "stars": {
+        "DUXUM8": {
+          "title": "DUXUM 8",
+          "transitions": [
+            "BUICK",
+            "NALGI"
+          ],
+          "runways": [
+            "RW26L",
+            "RW26R"
+          ],
+          "chart_extracted": true
+        },
+        "GRIZZ1": {
+          "title": "GRIZZ 1",
+          "transitions": [
+            "BEZOV",
+            "ILSAA",
+            "PAE",
+            "PIZZE"
+          ],
+          "runways": [
+            "RW08L",
+            "RW08R",
+            "RW13",
+            "RW26L",
+            "RW26R"
+          ],
+          "chart_extracted": true
+        },
+        "CYPRS3": {
+          "title": "CYPRS 3",
+          "transitions": [
+            "ELIDI",
+            "POWOL",
+            "TRENA"
+          ],
+          "runways": [
+            "RW08L",
+            "RW08R",
+            "RW13",
+            "RW26L",
+            "RW26R"
+          ],
+          "chart_extracted": true
+        },
+        "WHSLR9": {
+          "title": "WHSLR 9",
+          "transitions": [
+            "ELIDI",
+            "POWOL",
+            "TRENA"
+          ],
+          "runways": [
+            "RW08L",
+            "RW08R",
+            "RW13",
+            "RW26L",
+            "RW26R"
+          ],
+          "chart_extracted": true
+        },
+        "SHARK5": {
+          "title": "SHARK 5",
+          "transitions": [
+            "GOVAD",
+            "PEKAA"
+          ],
+          "runways": [
+            "RW08L",
+            "RW08R",
+            "RW13",
+            "RW26L",
+            "RW26R"
+          ],
+          "chart_extracted": true
+        },
+        "CANUC7": {
+          "title": "CANUC 7",
+          "transitions": [
+            "BOOTH",
+            "VITEV"
+          ],
+          "runways": [
+            "RW08L",
+            "RW08R",
+            "RW13",
+            "RW26L",
+            "RW26R"
+          ],
+          "chart_extracted": true
+        },
+        "SOUND7": {
+          "title": "SOUND 7",
+          "transitions": [
+            "LIBOG",
+            "VIGSO"
+          ],
+          "runways": [
+            "RW08L",
+            "RW08R",
+            "RW13",
+            "RW26L",
+            "RW26R"
+          ],
+          "chart_extracted": true
+        },
+        "ILAND2": {
+          "title": "ILAND 2",
+          "transitions": [
+            "GOTOK",
+            "OMVEX"
+          ],
+          "runways": [
+            "RW08L",
+            "RW08R",
+            "RW13"
+          ],
+          "chart_extracted": true
+        },
+        "VITEV6": {
+          "title": "VITEV 6",
+          "transitions": [
+            "BOOTH",
+            "VITEV"
+          ],
+          "runways": [
+            "RW26L",
+            "RW26R"
+          ],
+          "chart_extracted": true
+        }
+      }
+    },
+    "CYWG": {
+      "name": "Winnipeg/James Armstrong Richardson Intl",
+      "iata": "YWG",
+      "province": "MB",
+      "major": true,
+      "from_flight_history": false,
+      "stars": {
+        "NORAK6": {
+          "title": "NORAK 6",
+          "transitions": [
+            "BIPKU",
+            "EMVA",
+            "GOVIT"
+          ],
+          "runways": [
+            "RW13",
+            "RW18",
+            "RW31",
+            "RW36"
+          ],
+          "chart_extracted": true
+        },
+        "AMBIL5": {
+          "title": "AMBIL 5",
+          "transitions": [
+            "KOBID",
+            "MEVDU"
+          ],
+          "runways": [
+            "RW18",
+            "RW31",
+            "RW36"
+          ],
+          "chart_extracted": true
+        },
+        "BEFAN5": {
+          "title": "BEFAN 5",
+          "transitions": [
+            "DUVLA",
+            "SEGAP"
+          ],
+          "runways": [
+            "RW13",
+            "RW18",
+            "RW31",
+            "RW36"
+          ],
+          "chart_extracted": true
+        },
+        "KELTO5": {
+          "title": "KELTO 5",
+          "transitions": [
+            "GOREL",
+            "PERLI",
+            "TULUP",
+            "VITAG"
+          ],
+          "runways": [
+            "RW13",
+            "RW18",
+            "RW31",
+            "RW36"
+          ],
+          "chart_extracted": true
+        },
+        "PEPNO5": {
+          "title": "PEPNO 5",
+          "transitions": [
+            "KENBI",
+            "LITNA"
+          ],
+          "runways": [
+            "RW13",
+            "RW18",
+            "RW31",
+            "RW36"
+          ],
+          "chart_extracted": true
+        }
+      }
+    },
+    "CYXE": {
+      "name": "Saskatoon/John G. Diefenbaker Intl",
+      "iata": "YXE",
+      "province": "SK",
+      "major": false,
+      "from_flight_history": true,
+      "stars": {}
+    },
+    "CYYC": {
+      "name": "Calgary Intl",
+      "iata": "YYC",
+      "province": "AB",
+      "major": true,
+      "from_flight_history": false,
+      "stars": {
+        "ADVOX9": {
+          "title": "ADVOX 9",
+          "transitions": [
+            "ALSIV",
+            "AMUNO",
+            "MATIR",
+            "SEKAN"
+          ],
+          "runways": [
+            "RW11",
+            "RW17L",
+            "RW17R",
+            "RW29",
+            "RW35L",
+            "RW35R"
+          ],
+          "chart_extracted": true
+        },
+        "BIRKO6": {
+          "title": "BIRKO 6",
+          "transitions": [
+            "DATAV",
+            "DUDNI",
+            "ILADA",
+            "KELNU",
+            "ONBOS",
+            "PIKLA",
+            "UDPAV"
+          ],
+          "runways": [
+            "RW11",
+            "RW17L",
+            "RW17R",
+            "RW29",
+            "RW35L",
+            "RW35R"
+          ],
+          "chart_extracted": true
+        },
+        "EBGAL7": {
+          "title": "EBGAL 7",
+          "transitions": [
+            "ETLEM",
+            "ILOSA",
+            "MOBEK",
+            "NAMTI",
+            "OMRIT",
+            "TOVUM",
+            "VESDO"
+          ],
+          "runways": [
+            "RW11",
+            "RW17L",
+            "RW17R",
+            "RW35L",
+            "RW35R"
+          ],
+          "chart_extracted": true
+        },
+        "IGVEP7": {
+          "title": "IGVEP 7",
+          "transitions": [
+            "AMITO",
+            "ANTAK",
+            "NORET",
+            "PIBSO",
+            "SEDEL",
+            "SIGPA",
+            "TULOB"
+          ],
+          "runways": [
+            "RW11",
+            "RW17L",
+            "RW17R",
+            "RW29",
+            "RW35L",
+            "RW35R"
+          ],
+          "chart_extracted": true
+        }
+      }
+    },
+    "CYYZ": {
+      "name": "Toronto/Lester B. Pearson Intl",
+      "iata": "YYZ",
+      "province": "ON",
+      "major": true,
+      "from_flight_history": true,
+      "stars": {}
+    }
+  },
+  "changes_this_cycle": [
+    {
+      "airport": "CYUL",
+      "ident": "ROCKT3",
+      "title": "ROCKET THREE ARR",
+      "coded": "IKLUK.ROCKT3",
+      "page": "arrival_routes",
+      "change": "revised"
+    },
+    {
+      "airport": "CYQR",
+      "ident": "ANTOS7",
+      "title": "ANTOS SEVEN ARR",
+      "coded": "ANTOS.ANTOS7",
+      "page": "",
+      "change": "revised"
+    },
+    {
+      "airport": "CYQR",
+      "ident": "GORAK3",
+      "title": "GORAK THREE ARR",
+      "coded": "GORAK.GORAK3",
+      "page": "",
+      "change": "revised"
+    },
+    {
+      "airport": "CYQR",
+      "ident": "KEMKA7",
+      "title": "KEMKA SEVEN ARR",
+      "coded": "KEMKA.KEMKA7",
+      "page": "",
+      "change": "revised"
+    },
+    {
+      "airport": "CYQR",
+      "ident": "ODGOV7",
+      "title": "ODGOV SEVEN ARR",
+      "coded": "ODGOV.ODGOV7",
+      "page": "",
+      "change": "revised"
+    },
+    {
+      "airport": "CYYZ",
+      "ident": "DUVOS4",
+      "title": "DUVOS FOUR ARR",
+      "coded": "BOXUM.DUVOS4",
+      "page": "arrival_routes",
+      "change": "revised"
+    },
+    {
+      "airport": "CYYZ",
+      "ident": "IMEBA9",
+      "title": "IMEBA NINE ARR",
+      "coded": "IMEBA.IMEBA9",
+      "page": "arrival_routes",
+      "change": "revised"
+    },
+    {
+      "airport": "CYYZ",
+      "ident": "LINNG3",
+      "title": "LINNG THREE ARR",
+      "coded": "LINNG.LINNG3",
+      "page": "arrival_routes",
+      "change": "revised"
+    },
+    {
+      "airport": "CYYZ",
+      "ident": "VERKO1",
+      "title": "VERKO ONE ARR",
+      "coded": "LINNG.VERKO1",
+      "page": "arrival_routes",
+      "change": "revised"
+    },
+    {
+      "airport": "CYYZ",
+      "ident": "VIBLI6",
+      "title": "VIBLI SIX ARR",
+      "coded": "IMEBA.VIBLI6",
+      "page": "arrival_routes",
+      "change": "revised"
+    }
+  ],
+  "limitations": "Canadian STARs for CYYC, CYWG and CYVR in this file are chart-extracted from NAV CANADA CAP plates (ForeFlight cycle 2611). Other Canadian airports still need manual entry. Check every restriction and distance against the current plate."
+}

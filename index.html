@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script>
+/* GitHub Pages project URL needs a trailing slash so relative assets resolve under /crj-descent/. */
+(function () {
+  var path = location.pathname;
+  if (path && path.charAt(path.length - 1) !== "/" && !/\.[A-Za-z0-9]+$/.test(path)) {
+    location.replace(path + "/" + location.search + location.hash);
+  }
+})();
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0c0d0b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CRJ Descent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<title>CRJ Descent</title>
+<style>
+  :root {
+    --bg: #0c0d0b;
+    --bg-card: #171914;
+    --bg-input: #10120e;
+    --line: #2a2e24;
+    --text: #e8e6d9;
+    --muted: #9a9b8a;
+    --amber: #e0b14a;
+    --amber-dim: #8a6b22;
+    --green: #8fca7a;
+    --red: #e07a5f;
+    --accent: #d9b056;
+    --touch: 48px;
+    --radius: 12px;
+    --font: "SF Pro Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --mono: "SF Mono", "Menlo", "Consolas", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: var(--font); }
+  body { padding: 12px 14px calc(28px + env(safe-area-inset-bottom)); max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.25rem; font-weight: 650; letter-spacing: 0.02em; margin: 4px 0 2px; color: var(--amber); }
+  h1.brand { display: flex; align-items: center; gap: 10px; }
+  h1.brand img { width: 28px; height: 28px; border-radius: 7px; flex: none; }
+  .seg.compact { margin-top: 6px; }
+  .seg.compact button { min-height: 40px; font-size: 0.95rem; }
+  .sub { color: var(--muted); font-size: 0.92rem; margin: 0 0 16px; line-height: 1.35; }
+  section { background: var(--bg-card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; }
+  .label { font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; font-weight: 600; }
+  .seg { display: grid; gap: 6px; }
+  .seg.three { grid-template-columns: 1fr 1fr 1fr; }
+  .seg.two { grid-template-columns: 1fr 1fr; }
+  .seg button, button.icon, .wp-remove {
+    min-height: var(--touch);
+    border: 1px solid var(--line);
+    background: var(--bg-input);
+    color: var(--text);
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .seg button[aria-pressed="true"] {
+    background: #2a2414;
+    border-color: var(--amber);
+    color: var(--amber);
+    box-shadow: inset 0 0 0 1px var(--amber-dim);
+  }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field span { font-size: 0.8rem; color: var(--muted); }
+  input, select {
+    min-height: var(--touch);
+    background: var(--bg-input);
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 1.05rem;
+    font-family: var(--mono);
+    width: 100%;
+  }
+  input:focus, select:focus { outline: 2px solid var(--amber); outline-offset: 1px; }
+  .wp { border: 1px solid var(--line); border-radius: 10px; padding: 10px; margin-bottom: 10px; background: #12140f; }
+  .wp-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .wp-title { font-weight: 650; color: var(--amber); }
+  .wp-remove { min-width: var(--touch); padding: 0 12px; color: var(--red); }
+  .row { display: grid; gap: 8px; margin-bottom: 8px; }
+  .hint { font-size: 0.8rem; color: var(--muted); margin: 0 0 8px; }
+  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0 0; }
+  button.primary, button.secondary, button.ghost {
+    min-height: 52px; border-radius: 12px; font-size: 1.05rem; font-weight: 700; font-family: inherit; cursor: pointer; border: 1px solid var(--line);
+  }
+  button.primary { background: var(--amber); color: #16140c; border-color: var(--amber); grid-column: 1 / -1; }
+  button.secondary { background: var(--bg-input); color: var(--text); }
+  button.ghost { background: transparent; color: var(--muted); }
+  .banner { padding: 12px 14px; border-radius: 10px; margin-bottom: 10px; font-size: 0.98rem; line-height: 1.4; }
+  .banner.warn { background: #3a1d16; border: 1px solid var(--red); color: #ffc8b8; }
+  .banner.note { background: #1c1a12; border: 1px solid var(--amber-dim); color: var(--text); }
+  .callout { background: #1a1c15; border-left: 4px solid var(--amber); padding: 12px 14px; border-radius: 0 10px 10px 0; margin-bottom: 8px; }
+  .callout strong { color: var(--amber); display: block; margin-bottom: 4px; font-size: 0.95rem; letter-spacing: 0.04em; text-transform: uppercase; }
+  .callout p { margin: 0; line-height: 1.4; }
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -2px; }
+  table { width: 100%; min-width: 440px; border-collapse: collapse; font-variant-numeric: tabular-nums; font-family: var(--mono); font-size: 0.92rem; }
+  .energy { font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; font-size: 0.75rem; font-family: var(--font); white-space: nowrap; }
+  .energy.idle { color: var(--green); }
+  .energy.stay { color: var(--green); }
+  .energy.power { color: var(--amber); }
+  .energy.drag { color: var(--red); }
+  th { text-align: left; color: var(--muted); font-weight: 600; font-family: var(--font); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 8px 6px; border-bottom: 1px solid var(--line); }
+  td { padding: 10px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  td.num { text-align: right; }
+  tr:last-child td { border-bottom: none; }
+  .fixname { font-weight: 700; color: var(--amber); font-family: var(--font); letter-spacing: 0.04em; }
+  .wp-note { display: block; color: var(--muted); font-size: 0.75rem; font-family: var(--font); margin-top: 4px; max-width: 28ch; }
+  .legs-list { display: flex; flex-direction: column; gap: 8px; margin: 8px 0 0; }
+  .legs-row { background: var(--bg-input); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  .legs-row.flagged { border-color: var(--red); }
+  .legs-ident { font-family: var(--mono); font-weight: 700; letter-spacing: 0.04em; color: var(--amber); font-size: 1.05rem; }
+  .legs-enter { font-family: var(--mono); font-size: 1.15rem; font-weight: 700; margin: 4px 0 2px; }
+  .legs-hard { color: var(--text); }
+  .legs-pub { color: var(--muted); font-size: 0.75rem; font-family: var(--font); margin-left: 6px; }
+  .legs-note { color: var(--muted); font-size: 0.8rem; line-height: 1.35; margin: 4px 0 0; }
+  .legs-flag { color: #ffc8b8; font-size: 0.8rem; margin-top: 4px; }
+  .legs-tag { display: inline-block; font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; margin-left: 6px; vertical-align: middle; }
+  .meta { color: var(--muted); font-size: 0.88rem; margin: 0 0 10px; line-height: 1.45; }
+  .meta b { color: var(--text); font-weight: 650; }
+  footer { color: var(--muted); font-size: 0.8rem; text-align: center; margin: 18px 8px 8px; line-height: 1.4; }
+  .error { color: var(--red); padding: 8px 0; }
+  .hidden { display: none !important; }
+  @media (max-width: 420px) {
+    .grid3 { grid-template-columns: 1fr 1fr; }
+    table { font-size: 0.84rem; }
+    th, td { padding: 8px 4px; }
+  }
+
+  #updateNote { display: none; }
+  #updateNote.show { display: block; }
+  .ver { color: var(--amber); }
+  .open-tag { color: var(--muted); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; font-size: 0.8rem; }
+  .open-est { color: var(--muted); font-size: 0.72rem; }
+  .hint.err { color: var(--red, #ff6b6b); }
+  .wp-title small { color: var(--muted); font-weight: 500; letter-spacing: 0; text-transform: none; }
+  tr.builtin td { color: var(--muted); }
+  tr.builtin .fixname { color: var(--muted); font-weight: 600; }
+
+  .arrival-pick { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .cycle-line { font-size: 0.8rem; color: var(--muted); margin: 8px 0 0; line-height: 1.4; }
+  .cycle-line.expired { color: #ffc8b8; }
+  #arrivalFlags { margin-top: 8px; }
+  .wp.edited { border-color: var(--amber); box-shadow: inset 4px 0 0 var(--amber); }
+  .wp-edit-bar { display: none; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin: -2px 0 8px; }
+  .wp.edited .wp-edit-bar { display: flex; }
+  .wp-edit-tag { font-size: 0.8rem; color: var(--amber); line-height: 1.35; }
+  .wp-edit-tag b { font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+  .wp-pub { color: var(--muted); font-size: 0.78rem; margin: -4px 0 8px; }
+  .wp-reset, .wp-step, #resetAllPub { min-height: var(--touch); border: 1px solid var(--line); background: var(--bg-input); color: var(--text); border-radius: 10px; font-size: 0.95rem; font-weight: 600; font-family: inherit; cursor: pointer; padding: 0 14px; touch-action: manipulation; }
+  .wp-reset { color: var(--amber); border-color: var(--amber-dim); }
+  .alt-wrap { display: grid; grid-template-columns: var(--touch) 1fr var(--touch); gap: 6px; }
+  .wp-step { padding: 0; font-family: var(--mono); }
+  .alt-row { grid-template-columns: 1.5fr 1fr; }
+  @media (max-width: 420px) { .alt-row { grid-template-columns: 1fr; } }
+  #resetAllPub { width: 100%; margin: 0 0 10px; color: var(--amber); border-color: var(--amber-dim); }
+  @media (max-width: 420px) {
+    .arrival-pick { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <div id="updateNote" class="banner note" role="status"></div>
+  <h1 class="brand"><img src="icon-192.png" width="28" height="28" alt="">CRJ900 Idle Descent</h1>
+  <p class="sub">Plan waypoint crossings and slowdowns from your present altitude. Line technique, not VNAV.</p>
+
+  <section>
+    <p class="label">Landing weight</p>
+    <div class="seg three" id="weightSeg" role="radiogroup" aria-label="Landing weight">
+      <button type="button" data-val="light" aria-pressed="false">Light</button>
+      <button type="button" data-val="medium" aria-pressed="true">Medium</button>
+      <button type="button" data-val="heavy" aria-pressed="false">Heavy</button>
+    </div>
+    <label class="field" style="margin-top:10px"><span>Landing weight (lb, optional)</span>
+      <input id="landingWt" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 68000" value="" autocomplete="off"></label>
+    <p class="hint" id="landingWtHint" style="margin-top:6px">Light under 65,000 · Medium 65,000–70,000 · Heavy over 70,000 up to 75,100 (max landing). A weight picks the class; tapping Light, Medium or Heavy clears it.</p>
+  </section>
+
+  <section>
+    <p class="label">Slow to 250 KIAS</p>
+    <div class="seg two" id="methodSeg" role="radiogroup" aria-label="Slowdown method">
+      <button type="button" data-val="A" aria-pressed="true">A · Level off<br><small style="font-weight:500;color:var(--muted)">10 kt per NM</small></button>
+      <button type="button" data-val="B" aria-pressed="false">B · Shallow<br><small style="font-weight:500;color:var(--muted)">1,200–1,400 fpm</small></button>
+    </div>
+    <div id="methodBbox" class="hidden" style="margin-top:12px">
+      <p class="label">Start shallow above the 250 restriction</p>
+      <div class="seg three" id="methodBSeg">
+        <button type="button" data-val="2000" aria-pressed="false">+2,000 ft<br><small style="font-weight:500;color:var(--muted)">1,200 fpm</small></button>
+        <button type="button" data-val="3000" aria-pressed="false">+3,000 ft<br><small style="font-weight:500;color:var(--muted)">1,300 fpm</small></button>
+        <button type="button" data-val="4000" aria-pressed="true">+4,000 ft<br><small style="font-weight:500;color:var(--muted)">1,400 fpm</small></button>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="label">Present conditions</p>
+    <div class="grid3">
+      <label class="field"><span>Altitude (ft)</span><input id="startAlt" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 35000" value=""></label>
+      <label class="field"><span>Descent IAS (250–320)</span>
+        <input id="startSpd" inputmode="numeric" pattern="[0-9]*" value="290">
+        <div class="seg three compact" id="highSpdSeg" role="radiogroup" aria-label="Descent IAS">
+          <button type="button" data-val="290" aria-pressed="true">290</button>
+          <button type="button" data-val="280" aria-pressed="false">280</button>
+          <button type="button" data-val="270" aria-pressed="false">270</button>
+        </div>
+      </label>
+      <label class="field"><span>Wind (kt, +tail)</span><input id="wind" inputmode="decimal" placeholder="0" value="0"></label>
+    </div>
+    <p class="hint" style="margin-top:8px">Descent IAS is 290 KIAS by default; pick 280 or 270 (or type 250–320) when the STAR or ATC assigns a speed. Idle rate depends on this speed and your weight: slower or heavier means a shallower idle path, so you start down earlier. Wind is plus for a tailwind, minus for a headwind. Descent Mach is 0.74 until you reach the high-speed IAS. 250 KIAS at 10,000 ft is always built in, and a tighter restriction of yours overrides it.</p>
+  </section>
+
+  <section>
+    <p class="label">Arrival</p>
+    <p class="hint">US STARs fill in from the FAA CIFP. Your Canadian airports are in the picker, but NAV CANADA does not publish a free coded STAR file, so those still have to be entered by hand from the CAP or your Jeppesen chart. After a fill you can change any restriction (type, altitude, speed) for this plan only; the arrival database is not changed. Edited fixes are marked, and Reset to published puts the chart value back.</p>
+    <div class="arrival-pick">
+      <label class="field"><span>Airport (ICAO)</span>
+        <input id="arrAirport" list="arrAirportList" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="e.g. KDTW">
+        <datalist id="arrAirportList"></datalist>
+      </label>
+      <label class="field"><span>STAR</span>
+        <select id="arrStar" disabled><option value="">Select airport</option></select>
+      </label>
+      <label class="field"><span>Transition</span>
+        <select id="arrTrans" disabled><option value="">Select STAR</option></select>
+      </label>
+      <label class="field"><span>Runway transition</span>
+        <select id="arrRwy" disabled><option value="">Select STAR</option></select>
+      </label>
+    </div>
+    <div class="actions" style="margin-top:0;margin-bottom:10px">
+      <button type="button" class="secondary" id="fillArrival" disabled>Fill waypoints</button>
+    </div>
+    <p id="cifpCycle" class="cycle-line"></p>
+    <p id="capCycle" class="cycle-line"></p>
+    <div id="cifpExpired" class="banner warn hidden" role="status"></div>
+    <div id="capChanges" class="banner note hidden"></div>
+    <p class="label" style="margin-top:14px">Arrival waypoints</p>
+    <p class="hint">Waypoint 1 is the end of the STAR or last constraint. Add further fixes working backwards up the arrival. Each leg is the distance to the previously entered fix. The plan is shown in flying order.</p>
+    <div id="arrivalFlags" class="banner note hidden"></div>
+    <button type="button" id="resetAllPub" class="hidden">Reset all to published</button>
+    <div id="wpList"></div>
+    <div class="actions">
+      <button type="button" class="secondary" id="addWp">+ Add fix (backwards)</button>
+      <button type="button" class="ghost" id="loadSample">Load sample (fictional)</button>
+    </div>
+  </section>
+
+  <button type="button" class="primary" id="planBtn">Plan descent</button>
+  <div class="actions" style="margin-top:8px">
+    <button type="button" class="ghost" id="clearBtn">Clear saved inputs</button>
+  </div>
+
+  <div id="error" class="error hidden"></div>
+  <div id="results" class="hidden" style="margin-top:16px"></div>
+
+  <footer>Planning aid only, based on line technique. Not an approved performance source.<br>Version <span class="ver" id="appVersion">3.0</span></footer>
+
+<script src="planner.js?v=3.0"></script>
+<script src="cifp.js?v=3.0"></script>
+<script>
+(function () {
+  const APP_VERSION = "3.0";
+  const P = globalThis.CRJPlanner;
+  const STORE = "crj-descent-plan-v3.0";
+  const STORE_OLD = ["crj-descent-plan-v2.9", "crj-descent-plan-v2.8", "crj-descent-plan-v2.7", "crj-descent-plan-v2.6", "crj-descent-plan-v2.5", "crj-descent-plan-v2.4", "crj-descent-plan-v2.3", "crj-descent-plan-v2.2", "crj-descent-plan-v2", "crj-descent-plan-v1"];
+  const SEEN = "crj-descent-seen-version";
+  const $ = (id) => document.getElementById(id);
+  $("appVersion").textContent = APP_VERSION;
+
+  const SAMPLE = [
+    { name: "FAFXX", leg: "", typ: "at", alt: "2500", min: "", max: "", spd: "180" },
+    { name: "MAPLE", leg: "10", typ: "window", alt: "", min: "5000", max: "6000", spd: "210" },
+    { name: "CEDAR", leg: "16", typ: "at", alt: "10000", min: "", max: "", spd: "250" },
+    { name: "RIVER", leg: "36", typ: "at_or_below", alt: "24000", min: "", max: "", spd: "" },
+  ];
+
+  function emptyWp() {
+    return { name: "", leg: "", typ: "at", alt: "", min: "", max: "", spd: "" };
+  }
+  function emptyEnd() {
+    return { name: "", leg: "", typ: "at", alt: "", min: "", max: "", spd: "" };
+  }
+  function looksLikeRunway(wp) {
+    const n = String((wp && wp.name) || "").trim().toUpperCase();
+    return n === "RUNWAY" || /^RWY(\b|\s|$)/.test(n);
+  }
+  function defaultWaypoints() {
+    return [emptyEnd(), emptyWp(), emptyWp()];
+  }
+
+  const state = {
+    weight: "medium",
+    landingWt: "",
+    method: "A",
+    methodB: 4000,
+    startAlt: "",
+    startSpd: "290",
+    wind: "0",
+    waypoints: defaultWaypoints(),
+    sampleLoaded: false,
+    arrival: { airport: "", star: "", trans: "", rwy: "" },
+  };
+
+  const Cifp = globalThis.CRJCifp;
+  let cifpStars = null;
+  let cifpMeta = null;
+  let canadaManifest = null;
+
+  function segBind(id, key, onChange) {
+    const box = $(id);
+    box.addEventListener("click", (e) => {
+      const btn = e.target.closest("button");
+      if (!btn) return;
+      if (key === "methodB") state.methodB = +btn.dataset.val;
+      else state[key] = btn.dataset.val;
+      paintSeg(box, key === "methodB" ? String(state.methodB) : String(state[key]));
+      if (key === "method") $("methodBbox").classList.toggle("hidden", state.method !== "B");
+      save();
+      if (onChange) onChange();
+    });
+    const val = key === "methodB" ? String(state.methodB) : String(state[key]);
+    paintSeg(box, val);
+  }
+  function paintSeg(box, val) {
+    box.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.val === String(val) ? "true" : "false"));
+  }
+
+  function typOptions(sel) {
+    return ["at", "at_or_below", "at_or_above", "window", "none"].map((t) => {
+      const label = { at: "At", at_or_below: "At or below", at_or_above: "At or above", window: "Window", none: "None" }[t];
+      return `<option value="${t}"${t === sel ? " selected" : ""}>${label}</option>`;
+    }).join("");
+  }
+
+  function renderWaypoints() {
+    const list = $("wpList");
+    list.innerHTML = state.waypoints.map((wp, i) => {
+      const isWin = wp.typ === "window";
+      const isNone = wp.typ === "none";
+      const isFirst = i === 0;
+      const title = isFirst ? `Waypoint 1 · End of STAR <small>or last constraint</small>` : `Waypoint ${i + 1} <small>back up the arrival</small>`;
+      const legLabel = isFirst ? "NM to previous (unused)" : "NM to previous fix";
+      const altLabel = "Altitude (ft)";
+      const spdLabel = "Speed (KIAS, optional)";
+      const removeDisabled = isFirst ? "disabled style=\"opacity:0.35\"" : `data-remove="${i}"`;
+      const edited = Cifp && Cifp.isEdited ? Cifp.isEdited(wp) : false;
+      const pubLine = wp.pub && Cifp ? `<p class="wp-pub" data-role="pub">Published: ${esc(Cifp.describeRestriction(wp.pub))}</p>` : "";
+      return `<div class="wp${edited ? " edited" : ""}" data-i="${i}">
+        <div class="wp-head"><span class="wp-title">${title}</span>
+          <button type="button" class="wp-remove" ${removeDisabled} aria-label="Remove waypoint">Remove</button>
+        </div>
+        ${pubLine}
+        <div class="wp-edit-bar"><span class="wp-edit-tag"><b>Edited</b> · this plan only</span>
+          <button type="button" class="wp-reset" data-reset="${i}">Reset to published</button>
+        </div>
+        <div class="row" style="grid-template-columns: 1.2fr 0.8fr">
+          <label class="field"><span>Name</span><input data-k="name" value="${esc(wp.name)}" autocomplete="off" autocapitalize="characters"></label>
+          <label class="field"><span>${legLabel}</span><input data-k="leg" inputmode="decimal" value="${esc(wp.leg)}" ${isFirst ? "disabled" : ""}></label>
+        </div>
+        <div class="row" style="grid-template-columns: 1fr">
+          <label class="field"><span>Altitude restriction</span>
+            <select data-k="typ">${typOptions(wp.typ)}</select>
+          </label>
+        </div>
+        <div class="row alt-row ${isWin ? "hidden" : ""}" data-role="single-alt">
+          <div class="field"><span>${altLabel}</span>
+            <div class="alt-wrap">
+              <button type="button" class="wp-step" data-step="-1000" aria-label="1,000 ft lower" ${isNone ? "disabled" : ""}>−1k</button>
+              <input data-k="alt" inputmode="numeric" pattern="[0-9]*" value="${esc(wp.alt)}" ${isNone ? "disabled" : ""}>
+              <button type="button" class="wp-step" data-step="1000" aria-label="1,000 ft higher" ${isNone ? "disabled" : ""}>+1k</button>
+            </div>
+          </div>
+          <label class="field"><span>${spdLabel}</span><input data-k="spd" inputmode="decimal" value="${esc(wp.spd)}"></label>
+        </div>
+        <div class="row ${isWin ? "" : "hidden"}" style="grid-template-columns: 1fr 1fr 1fr" data-role="window-alt">
+          <label class="field"><span>Window min ft</span><input data-k="min" inputmode="numeric" pattern="[0-9]*" value="${esc(wp.min)}"></label>
+          <label class="field"><span>Window max ft</span><input data-k="max" inputmode="numeric" pattern="[0-9]*" value="${esc(wp.max)}"></label>
+          <label class="field"><span>Speed (KIAS)</span><input data-k="spd2" inputmode="decimal" value="${esc(wp.spd)}"></label>
+        </div>
+      </div>`;
+    }).join("");
+    paintResetAll();
+  }
+
+  function paintResetAll() {
+    const any = !!(Cifp && Cifp.isEdited && state.waypoints.some((w) => Cifp.isEdited(w)));
+    $("resetAllPub").classList.toggle("hidden", !any);
+  }
+
+  function refreshEditedMarks() {
+    readInputsFromDom();
+    $("wpList").querySelectorAll(".wp").forEach((el) => {
+      const wp = state.waypoints[+el.dataset.i];
+      el.classList.toggle("edited", !!(Cifp && Cifp.isEdited && Cifp.isEdited(wp)));
+    });
+    paintResetAll();
+  }
+
+  function editedFixNames() {
+    if (!Cifp || !Cifp.isEdited) return [];
+    return state.waypoints.filter((w) => Cifp.isEdited(w)).map((w) => (w.name || "FIX").toUpperCase());
+  }
+
+  function esc(v) {
+    return String(v == null ? "" : v).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  // Airport elevations (FAA CIFP + OurAirports), used only to floor the open-fix estimate.
+  let airportElev = null;
+  fetch("airport_elevations.json").then((r) => (r.ok ? r.json() : null)).then((j) => { airportElev = j && j.elevation_ft ? j.elevation_ft : null; }).catch(() => {});
+  function fieldElevationFor(apt) {
+    const k = String(apt || "").trim().toUpperCase();
+    if (!k || !airportElev || airportElev[k] == null) return null;
+    return +airportElev[k];
+  }
+  function landingWtStatus() {
+    const raw = String(state.landingWt || "").replace(/[, ]/g, "");
+    const hint = $("landingWtHint");
+    if (!raw) { hint.classList.remove("err"); hint.textContent = "Light under 65,000 · Medium 65,000–70,000 · Heavy over 70,000 up to 75,100 (max landing). A weight picks the class; tapping Light, Medium or Heavy clears it."; return; }
+    try {
+      const n = Number(raw);
+      if (!Number.isFinite(n)) throw new Error("Landing weight must be a number in lb (55,000–75,100).");
+      const cls = P.weightClassForLb(n);
+      state.weight = cls;
+      paintSeg($("weightSeg"), cls);
+      hint.classList.remove("err");
+      hint.textContent = `${n.toLocaleString("en-US")} lb → ${cls[0].toUpperCase() + cls.slice(1)} rates.`;
+    } catch (err) {
+      hint.classList.add("err");
+      hint.textContent = err.message;
+    }
+  }
+
+  function readInputsFromDom() {
+    state.landingWt = $("landingWt").value.trim();
+    state.startAlt = $("startAlt").value.trim();
+    state.startSpd = $("startSpd").value.trim() || "290";
+    state.wind = $("wind").value.trim() || "0";
+    $("wpList").querySelectorAll(".wp").forEach((el) => {
+      const i = +el.dataset.i;
+      const get = (k) => {
+        const n = el.querySelector(`[data-k="${k}"]`);
+        return n ? n.value.trim() : "";
+      };
+      const typ = get("typ") || "at";
+      const spd = typ === "window" ? (get("spd2") || get("spd")) : get("spd");
+      const prev = state.waypoints[i] || {};
+      const next = {
+        name: get("name"),
+        leg: get("leg"),
+        typ,
+        alt: get("alt"),
+        min: get("min"),
+        max: get("max"),
+        spd,
+      };
+      if (prev.pub) next.pub = prev.pub;
+      state.waypoints[i] = next;
+    });
+  }
+
+  function save() {
+    try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) { /* ignore */ }
+  }
+  function migrateState(s) {
+    if (!s || !Array.isArray(s.waypoints) || !s.waypoints.length) return s;
+    if (looksLikeRunway(s.waypoints[0])) {
+      const rest = s.waypoints.slice(1).map((w, i) => (i === 0 ? Object.assign({}, w, { leg: "" }) : w));
+      s.waypoints = rest.length ? rest : defaultWaypoints();
+    }
+    return s;
+  }
+  function load() {
+    try {
+      let raw = localStorage.getItem(STORE);
+      let fromOld = false;
+      if (!raw) {
+        for (const k of STORE_OLD) {
+          raw = localStorage.getItem(k);
+          if (raw) { fromOld = true; break; }
+        }
+      }
+      if (!raw) return false;
+      let s = JSON.parse(raw);
+      if (!s || !Array.isArray(s.waypoints)) return false;
+      if (fromOld) s = migrateState(s);
+      if (s.methodB === 12000 || s.methodB === 13000 || s.methodB === 14000) s.methodB = s.methodB - 10000;
+      Object.assign(state, s);
+      if (!state.waypoints.length) state.waypoints = defaultWaypoints();
+      if (fromOld) {
+        save();
+        for (const k of STORE_OLD) {
+          try { localStorage.removeItem(k); } catch (e) {}
+        }
+      }
+      return true;
+    } catch (e) { return false; }
+  }
+
+  function num(v, fallback) {
+    if (v === "" || v == null) return fallback;
+    const n = Number(String(v).replace(/,/g, ""));
+    return Number.isFinite(n) ? n : fallback;
+  }
+
+  function buildInputs() {
+    readInputsFromDom();
+    const wps = state.waypoints.filter((w, i) => i === 0 || w.name || w.alt || w.min || w.leg);
+    if (wps.length < 2) throw new Error("Add the last STAR constraint and at least one fix back up the arrival.");
+    const startAlt = num(state.startAlt, NaN);
+    if (!Number.isFinite(startAlt) || startAlt <= 0) throw new Error("Enter your present altitude (ft).");
+    const startSpd = num(state.startSpd, 290);
+    if (!(startSpd >= 250 && startSpd <= 320)) throw new Error("Descent IAS must be between 250 and 320 KIAS.");
+    const wind = num(state.wind, 0);
+    let lw = null;
+    if (String(state.landingWt || "").trim() !== "") {
+      lw = num(String(state.landingWt).replace(/[, ]/g, ""), NaN);
+      if (!Number.isFinite(lw)) throw new Error("Landing weight must be a number in lb (55,000–75,100), or leave it blank.");
+      state.weight = P.weightClassForLb(lw); // throws a clear 55,000–75,100 error
+    }
+    const entry = wps.map((w, i) => {
+      const typ = w.typ || "at";
+      const ac = { typ };
+      if (typ === "window") {
+        ac.min_ft = num(w.min, null);
+        ac.max_ft = num(w.max, null);
+      } else if (typ !== "none") {
+        ac.altitude_ft = num(w.alt, null);
+      }
+      return {
+        name: (w.name || "FIX").toUpperCase(),
+        leg_distance_nm: i === 0 ? 0 : num(w.leg, 0),
+        altitude_constraint: ac,
+        speed_constraint: w.spd === "" ? null : num(w.spd, null),
+      };
+    });
+    return {
+      waypoints: P.entryToFlightOrder(entry),
+      cruise_altitude_ft: startAlt,
+      weight_class: state.weight,
+      landing_weight_lb: lw,
+      field_elevation_ft: fieldElevationFor(state.arrival && state.arrival.airport),
+      decel_method: state.method,
+      method_b_start_altitude_ft: state.methodB,
+      wind_component_kt: wind,
+      isa_dev_c: 0,
+      descent_mach: 0.74,
+      high_speed_ias_kias: startSpd,
+      energy_idle_band: 0.10,
+      example_data: !!state.sampleLoaded,
+    };
+  }
+
+  function fmt(n, d) {
+    if (n == null || Number.isNaN(n)) return "—";
+    return Number(n).toLocaleString("en-US", { maximumFractionDigits: d == null ? 0 : d, minimumFractionDigits: d == null ? 0 : d });
+  }
+  function fmtAlt(n) { return n == null ? "—" : fmt(n, 0); }
+  function fmtVs(n) { return n == null ? "—" : fmt(n, 0); }
+
+  function slowdownCallouts(result) {
+    const html = [];
+    for (const s of result.deceleration_segments || []) {
+      const name = s.before_fix || "the restriction";
+      if (s.type === "method_A_level_off") {
+        html.push(`<div class="callout"><strong>Slow to 250 — method A</strong><p>Level off <b>${fmt(s.distance_nm, 1)} NM before ${esc(name)}</b> at <b>${fmtAlt(s.altitude_ft || s.start_altitude_ft)} ft</b>. Target VS is 0 (level). Lose about 10 kt per NM.</p></div>`);
+      } else if (s.type === "method_B_shallow_descent") {
+        html.push(`<div class="callout"><strong>Slow to 250 — method B</strong><p>Shallow the descent at <b>${fmtAlt(s.start_altitude_ft)} ft</b>, target VS <b>${fmtVs(s.vs_fpm)} fpm</b>, for about <b>${fmt(s.distance_nm, 1)} NM</b> to reach 250 KIAS by <b>${esc(name)}</b> (${fmtAlt(s.end_altitude_ft)} ft).</p></div>`);
+      } else if (s.type === "gradual_decel_to_210" || s.type === "gradual_decel") {
+        html.push(`<div class="callout"><strong>Slow to ${fmt(s.to_kias, 0)}</strong><p>Start a gradual descent slowdown at about <b>${fmtAlt(s.start_altitude_ft)} ft</b>, <b>${fmt(s.distance_nm, 1)} NM before ${esc(name)}</b>. Ease VS from <b>${fmtVs(s.vs_start_fpm)} fpm</b> down to <b>${fmtVs(s.vs_end_fpm)} fpm</b> as you go from ${fmt(s.from_kias, 0)} to ${fmt(s.to_kias, 0)} KIAS. This distance is an assumption to refine.</p></div>`);
+      }
+    }
+    return html.join("");
+  }
+
+  function idleBelowXo(result) {
+    const m = result.tod && result.tod.idle_model;
+    if (!m || m.fixed_angle_deg != null) return "";
+    const ias = +result.atmosphere.high_speed_ias_kias;
+    const a250 = +m.angle_250_deg, a290 = +m.angle_290_deg;
+    const ang = a250 + (a290 - a250) * (Math.min(Math.max(ias, 250), 320) - 250) / 40;
+    return ` · idle ${fmt(m.mach_angle_deg, 1)}° in Mach, ${fmt(ang, 1)}° at ${fmt(ias, 0)} kt`;
+  }
+
+  function lastRestrictedName(result) {
+    const wps = (result.waypoints || []).filter((w) => !w.open && !w.is_builtin && !w.synthetic);
+    return wps.length ? wps[wps.length - 1].name : "the last restriction";
+  }
+
+  function renderResults(result) {
+    const steep = (result.flags || []).filter((f) => /too steep for an idle descent/i.test(f) || /too high to idle/i.test(f));
+    const banners = [];
+    if (result.example_data) banners.push(`<div class="banner note"><b>Example data.</b> This is a fictional arrival, not a published procedure.</div>`);
+    for (const f of steep) banners.push(`<div class="banner warn">${esc(f)}</div>`);
+    const openNames = (result.waypoints || []).filter((w) => w.open).map((w) => w.name);
+    if (openNames.length) {
+      const elev = result.inputs_field_elevation_ft;
+      banners.push(`<div class="banner note"><b>Open after ${esc(lastRestrictedName(result))}:</b> ${esc(openNames.join(", "))} ${openNames.length === 1 ? "has" : "have"} no altitude restriction, so the plan does not invent a target there and never asks for drag on ${openNames.length === 1 ? "that leg" : "those legs"}. Set an altitude on the fix if you want one.${elev == null ? "" : ` The idle estimate is floored at field elevation ${fmt(elev)} ft.`}</div>`);
+    }
+    const editedNames = editedFixNames();
+    if (editedNames.length) banners.push(`<div class="banner note"><b>Edited restrictions:</b> this plan uses your changes at ${esc(editedNames.join(", "))}, not the published values. LEGS checks are against your edits.</div>`);
+
+    const tod = result.tod || {};
+    const w = result.weight;
+    const first = tod.before_first_fix;
+    const meta = `<p class="meta">
+      <b>${w.class[0].toUpperCase() + w.class.slice(1)}</b>${w.landing_weight_lb != null ? ` (${fmt(w.landing_weight_lb)} lb)` : ""} · 250 idle <b>${fmt(w.idle_250_kias_fpm)} fpm</b> · 210 idle <b>${fmt(w.idle_210_kias_fpm)} fpm</b><br>
+      Descent <b>M${Number(result.atmosphere.descent_mach).toFixed(2)} / ${fmt(result.atmosphere.high_speed_ias_kias, 0)} KIAS</b>${idleBelowXo(result)}<br>
+      From <b>${fmtAlt(tod.altitude_ft)} ft</b> / <b>${fmt(tod.ias_kias, 0)} KIAS</b> (M${Number(tod.mach).toFixed(2)}), path <b>${fmt(tod.flight_path_angle_deg, 2)}°</b>, idle VS <b>${fmtVs(tod.required_vs_fpm)} fpm</b>.
+      ${first ? `Reach <b>${esc(first.fix)}</b> in <b>${fmt(first.distance_nm, 1)} NM</b>.` : ""}
+      Wind ${result.atmosphere.wind_component_kt > 0 ? "+" : ""}${fmt(result.atmosphere.wind_component_kt, 0)} kt.
+    </p>`;
+
+    const energyClass = (s) => {
+      if (s === "IDLE") return "energy idle";
+      if (s === "STAY_HIGH") return "energy stay";
+      if (s === "POWER_ON") return "energy power";
+      if (s === "ADD_DRAG") return "energy drag";
+      return "energy";
+    };
+    const energyShort = (s) => {
+      if (s === "IDLE") return "Idle";
+      if (s === "STAY_HIGH") return "Stay high";
+      if (s === "POWER_ON") return "Pwr on";
+      if (s === "ADD_DRAG") return "Drag";
+      return "—";
+    };
+    const rows = result.waypoints.map((wp) => {
+      const note = (wp.notes || []).filter((n) => /too steep|TOO_STEEP|too high|add drag/i.test(n)).map((n) => `<span class="wp-note">${esc(n)}</span>`).join("");
+      const cls = wp.is_builtin || wp.synthetic ? " class=\"builtin\"" : "";
+      const ang = wp.leg_path_angle_deg == null ? "—" : `${fmt(wp.leg_path_angle_deg, 1)}°`;
+      const st = wp.leg_energy_state;
+      return `<tr${cls}>
+        <td><span class="fixname">${esc(wp.name)}</span>${note}</td>
+        <td class="num">${wp.open ? `<span class="open-tag">Open</span>${wp.open_idle_estimate_ft != null ? `<br><small class="open-est">idle ≈${fmtAlt(wp.open_idle_estimate_ft)}</small>` : ""}` : fmtAlt(wp.target_crossing_altitude_ft)}</td>
+        <td class="num">${wp.target_speed_kias == null ? "—" : fmt(wp.target_speed_kias, 0)}</td>
+        <td class="num">${wp.leg_required_vs_fpm == null ? "—" : fmtVs(wp.leg_required_vs_fpm)}</td>
+        <td class="num">${ang}</td>
+        <td><span class="${energyClass(st)}">${energyShort(st)}</span></td>
+      </tr>`;
+    }).join("");
+
+    $("results").classList.remove("hidden");
+    $("results").innerHTML = `
+      ${banners.join("")}
+      ${slowdownCallouts(result)}
+      ${meta}
+      <section style="padding:8px 6px 4px">
+        <p class="label">Waypoint plan (flying order)</p>
+        <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Fix</th>
+            <th class="num">Cross</th>
+            <th class="num">KIAS</th>
+            <th class="num">Req VS</th>
+            <th class="num">Angle</th>
+            <th>Energy</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+        </div>
+        <p class="hint" style="margin-top:8px">Req VS and angle are from one constraint to the next (altitude change, leg distance and groundspeed). Idle is within ±10% of idle VS. Stay high = held up, then idle later, still idle-feasible. Drag is only shown when even the window bottom (or a hard restriction) is too high to make a later fix at idle; the flag names that leg. Leg distances stay as you entered them; cumulative miles from start are not shown.</p>
+      </section>
+      ${renderFmsLegs(result)}
+    `;
+    $("results").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function renderFmsLegs(result) {
+    const rows = result.fms_legs || [];
+    if (!rows.length) return "";
+    const cards = rows.map((r) => {
+      const flags = [r.published_flag, r.merge_warning].filter(Boolean);
+      const flagged = flags.length ? " flagged" : "";
+      const tag = r.is_along_track ? `<span class="legs-tag">along-track</span>` : `<span class="legs-tag">STAR fix</span>`;
+      const pub = r.published_restriction ? `<span class="legs-pub">${esc(r.published_restriction)}</span>` : "";
+      const flagHtml = flags.map((f) => `<div class="legs-flag">${esc(f)}</div>`).join("");
+      return `<div class="legs-row${flagged}">
+        <div><span class="legs-ident">${esc(r.ident)}</span>${tag}</div>
+        <div class="legs-enter"><span class="legs-hard">${esc(r.enter)}</span>${pub}</div>
+        <div class="legs-note">${esc(r.note || "")}</div>
+        ${flagHtml}
+      </div>`;
+    }).join("");
+    const notes = (result.fms_legs_notes || []).map((n) => `<p class="hint" style="margin:6px 0 0">${esc(n)}</p>`).join("");
+    return `
+      <section style="padding:8px 6px 4px">
+        <p class="label">FMS LEGS (flying order)</p>
+        <p class="hint" style="margin:0 0 8px">Enter these on the LEGS page so VNAV flies the stay-high idle path and levels where the plan does. Each altitude is a hard "at" on that path, checked against the published restriction shown in small type. Along-track points use the FMS 4200 [IDENT/DIST] format (AOM Vol 2 10.2.4), for example CUUGR/-3. The "KIAS / ALT" line is a generic reminder — the AOM does not give the scratchpad keystrokes.</p>
+        <div class="legs-list">${cards}</div>
+        ${notes}
+      </section>
+    `;
+  }
+
+  function run() {
+    $("error").classList.add("hidden");
+    try {
+      const inputs = buildInputs();
+      save();
+      const result = P.plan(inputs);
+      result.inputs_field_elevation_ft = inputs.field_elevation_ft;
+      renderResults(result);
+    } catch (err) {
+      $("results").classList.add("hidden");
+      $("error").classList.remove("hidden");
+      $("error").textContent = err && err.message ? err.message : String(err);
+    }
+  }
+
+  function fillForm() {
+    $("startAlt").value = state.startAlt;
+    $("startSpd").value = state.startSpd || "290";
+    $("wind").value = state.wind || "0";
+    $("landingWt").value = state.landingWt || "";
+    paintSeg($("weightSeg"), state.weight);
+    landingWtStatus();
+    paintSeg($("methodSeg"), state.method);
+    paintSeg($("methodBSeg"), String(state.methodB));
+    paintHighSpd();
+    $("methodBbox").classList.toggle("hidden", state.method !== "B");
+    renderWaypoints();
+    if (cifpStars) paintArrival();
+  }
+
+  function paintHighSpd() {
+    const box = $("highSpdSeg");
+    if (!box) return;
+    const v = String(Math.round(num(state.startSpd, 290)));
+    paintSeg(box, v);
+  }
+
+  $("addWp").addEventListener("click", () => {
+    readInputsFromDom();
+    state.waypoints.push(emptyWp());
+    renderWaypoints();
+    save();
+  });
+  $("wpList").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-remove]");
+    if (!btn) return;
+    readInputsFromDom();
+    const i = +btn.dataset.remove;
+    if (i === 0) return;
+    state.waypoints.splice(i, 1);
+    if (state.waypoints.length < 2) state.waypoints.push(emptyWp());
+    renderWaypoints();
+    save();
+  });
+  $("wpList").addEventListener("change", (e) => {
+    if (e.target && e.target.dataset.k === "typ") {
+      readInputsFromDom();
+      renderWaypoints();
+      save();
+    } else {
+      refreshEditedMarks();
+      save();
+    }
+  });
+  $("wpList").addEventListener("input", () => refreshEditedMarks());
+  $("wpList").addEventListener("click", (e) => {
+    const reset = e.target.closest("[data-reset]");
+    if (reset) {
+      readInputsFromDom();
+      const i = +reset.dataset.reset;
+      state.waypoints[i] = Cifp.resetToPublished(state.waypoints[i]);
+      renderWaypoints();
+      save();
+      return;
+    }
+    const step = e.target.closest("[data-step]");
+    if (step) {
+      e.preventDefault();
+      const card = step.closest(".wp");
+      const input = card && card.querySelector('[data-k="alt"]');
+      if (!input || input.disabled) return;
+      const cur = num(input.value, NaN);
+      const base = Number.isFinite(cur) ? cur : 10000;
+      input.value = String(Math.max(0, Math.round((base + +step.dataset.step) / 100) * 100));
+      refreshEditedMarks();
+      save();
+    }
+  });
+  $("resetAllPub").addEventListener("click", () => {
+    readInputsFromDom();
+    state.waypoints = state.waypoints.map((w) => (w.pub ? Cifp.resetToPublished(w) : w));
+    renderWaypoints();
+    save();
+  });
+  $("loadSample").addEventListener("click", () => {
+    state.waypoints = SAMPLE.map((w) => Object.assign({}, w));
+    state.startAlt = state.startAlt || "35000";
+    state.startSpd = state.startSpd || "290";
+    state.sampleLoaded = true;
+    fillForm();
+    save();
+    run();
+  });
+  $("clearBtn").addEventListener("click", () => {
+    try { localStorage.removeItem(STORE); } catch (e) {}
+    state.weight = "medium";
+    state.landingWt = "";
+    state.method = "A";
+    state.methodB = 4000;
+    state.startAlt = "";
+    state.startSpd = "290";
+    state.wind = "0";
+    state.waypoints = defaultWaypoints();
+    state.sampleLoaded = false;
+    state.arrival = { airport: "", star: "", trans: "", rwy: "" };
+    $("arrivalFlags").classList.add("hidden");
+    $("arrivalFlags").textContent = "";
+    fillForm();
+    if (cifpStars) paintArrival();
+    $("results").classList.add("hidden");
+    $("error").classList.add("hidden");
+  });
+  $("planBtn").addEventListener("click", run);
+  ["startAlt", "startSpd", "wind"].forEach((id) => {
+    $(id).addEventListener("change", () => { readInputsFromDom(); paintHighSpd(); save(); });
+  });
+  $("startSpd").addEventListener("input", () => {
+    state.startSpd = $("startSpd").value.trim() || "290";
+    paintHighSpd();
+  });
+  $("highSpdSeg").addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
+    state.startSpd = btn.dataset.val;
+    $("startSpd").value = state.startSpd;
+    paintHighSpd();
+    save();
+  });
+
+  segBind("weightSeg", "weight", () => {
+    // A tapped class overrides (clears) a typed landing weight.
+    state.landingWt = "";
+    $("landingWt").value = "";
+    landingWtStatus();
+    save();
+  });
+  $("landingWt").addEventListener("input", () => { state.landingWt = $("landingWt").value.trim(); landingWtStatus(); });
+  $("landingWt").addEventListener("change", () => { state.landingWt = $("landingWt").value.trim(); landingWtStatus(); save(); });
+  segBind("methodSeg", "method", () => $("methodBbox").classList.toggle("hidden", state.method !== "B"));
+  segBind("methodBSeg", "methodB");
+
+  if (load()) {
+    if (!state.arrival) state.arrival = { airport: "", star: "", trans: "", rwy: "" };
+    fillForm();
+  } else fillForm();
+
+  function setSelect(el, options, value, placeholder) {
+    const cur = value || "";
+    el.innerHTML = "";
+    const first = document.createElement("option");
+    first.value = "";
+    first.textContent = placeholder;
+    el.appendChild(first);
+    for (const opt of options) {
+      const o = document.createElement("option");
+      o.value = opt.id;
+      o.textContent = opt.title || opt.id;
+      el.appendChild(o);
+    }
+    el.value = options.some((o) => o.id === cur) ? cur : "";
+    el.disabled = options.length === 0;
+  }
+
+  function currentStar() {
+    if (!cifpStars || !state.arrival.airport || !state.arrival.star) return null;
+    const apt = cifpStars[state.arrival.airport];
+    return apt ? apt[state.arrival.star] || null : null;
+  }
+
+  function paintArrival() {
+    if (!cifpStars && !canadaManifest) return;
+    const airportEl = $("arrAirport");
+    if (document.activeElement !== airportEl) {
+      airportEl.value = state.arrival.airport || "";
+    }
+    const apt = (state.arrival.airport || "").toUpperCase();
+    const starOpts = apt && cifpStars[apt] ? Cifp.listStars(cifpStars, apt) : [];
+    const inCanada = !!(canadaManifest && canadaManifest.airports && canadaManifest.airports[apt]);
+    setSelect($("arrStar"), starOpts, state.arrival.star, apt ? (starOpts.length ? "Select STAR" : (inCanada ? "Enter manually" : "No STARs")) : "Select airport");
+    const star = currentStar();
+    const transOpts = star ? Cifp.listTransitions(star) : [];
+    setSelect($("arrTrans"), transOpts, state.arrival.trans, star ? "Select transition" : "Select STAR");
+    if (star && transOpts.length && !state.arrival.trans) {
+      const common = transOpts.find((o) => o.common) || (transOpts.length === 1 ? transOpts[0] : null);
+      if (common) {
+        state.arrival.trans = common.id;
+        $("arrTrans").value = common.id;
+      }
+    }
+    const rwyOpts = star ? Cifp.listRunways(star) : [];
+    setSelect($("arrRwy"), rwyOpts, state.arrival.rwy, star ? (rwyOpts.length ? "Select runway transition" : "None") : "Select STAR");
+    if (star && rwyOpts.length === 1 && !state.arrival.rwy) {
+      state.arrival.rwy = rwyOpts[0].id;
+      $("arrRwy").value = rwyOpts[0].id;
+    }
+    const canFill = !!(star && (transOpts.length === 0 || state.arrival.trans) && (rwyOpts.length === 0 || state.arrival.rwy));
+    $("fillArrival").disabled = !canFill;
+  }
+
+  function formatCapChange(c) {
+    const ident = c.ident || c.title || "STAR";
+    const title = c.title && c.title !== ident ? " " + c.title : "";
+    const page = c.page === "arrival_routes" ? ", arrival routes" : (c.page === "transition_routes" ? ", transition routes" : "");
+    return (c.airport || "") + " " + ident + title + page + " (" + (c.change || "revised") + ")";
+  }
+
+  function canadaChangesFor(icao) {
+    const all = (canadaManifest && canadaManifest.changes_this_cycle) || [];
+    if (!icao) return all;
+    return all.filter((c) => c.airport === icao);
+  }
+
+  function showCanadaNote(icao) {
+    const flags = $("arrivalFlags");
+    if (!icao) return;
+    const inFaa = !!(cifpStars && cifpStars[icao]);
+    const inCan = !!(canadaManifest && canadaManifest.airports && canadaManifest.airports[icao]);
+    const hasStars = !!(cifpStars && cifpStars[icao] && Object.keys(cifpStars[icao]).length);
+    const changes = canadaChangesFor(icao);
+    if (inCan && hasStars) {
+      const n = Object.keys(cifpStars[icao]).length;
+      let msg = icao + " arrivals auto-fill from NAV CANADA CAP plates (chart-extracted, cycle " + ((canadaManifest && canadaManifest.cycle) || "") + "). Check every restriction and distance against the current plate.";
+      if (changes.length) {
+        msg += " This CAP cycle revised: " + changes.map(formatCapChange).join("; ") + ".";
+      }
+      flags.textContent = msg;
+      flags.classList.remove("hidden");
+      return;
+    }
+    if (inFaa) {
+      flags.classList.add("hidden");
+      flags.textContent = "";
+      return;
+    }
+    if (inCan) {
+      let msg = icao + " is in your Canadian airport list, but this copy has no coded STAR for it yet. Enter the waypoints from your CAP or Jeppesen chart.";
+      if (changes.length) {
+        msg += " This CAP cycle revised: " + changes.map(formatCapChange).join("; ") + ".";
+      }
+      flags.textContent = msg;
+      flags.classList.remove("hidden");
+      return;
+    }
+    const ca = icao[0] === "C";
+    flags.textContent = icao + " is not in the FAA CIFP" + (ca ? " or your Canadian airport list" : "") + ". Enter the waypoints manually, or check the ICAO code.";
+    flags.classList.remove("hidden");
+  }
+
+  function showCycle() {
+    const el = $("cifpCycle");
+    const capEl = $("capCycle");
+    const warn = $("cifpExpired");
+    const capNote = $("capChanges");
+    const expiredBits = [];
+    if (cifpMeta) {
+      const a = Cifp.formatCycleDate(cifpMeta.effective);
+      const b = Cifp.formatCycleDate(cifpMeta.expires);
+      el.textContent = "FAA CIFP cycle " + (cifpMeta.cycle || cifpMeta.cycle_file) + " · " + a + " to " + b + ". US arrivals auto-fill.";
+      if (Cifp.cycleIsExpired(cifpMeta)) {
+        el.classList.add("expired");
+        expiredBits.push("The FAA CIFP cycle expired on " + b + " (0901Z).");
+      } else {
+        el.classList.remove("expired");
+      }
+    } else {
+      el.textContent = "FAA STAR data did not load. US auto-fill is unavailable; manual entry still works.";
+    }
+    if (canadaManifest) {
+      const a = Cifp.formatCycleDate(canadaManifest.effective);
+      const b = Cifp.formatCycleDate(canadaManifest.expires);
+      capEl.textContent = "NAV CANADA CAP cycle " + (canadaManifest.cycle || "") + " · " + a + " to " + b + ". CYYC, CYWG and CYVR arrivals auto-fill from the CAP plates; other Canadian airports are entered manually.";
+      if (Cifp.cycleIsExpired(canadaManifest)) {
+        capEl.classList.add("expired");
+        expiredBits.push("The NAV CANADA CAP cycle expired on " + b + " (0901Z).");
+      } else {
+        capEl.classList.remove("expired");
+      }
+      const changes = canadaManifest.changes_this_cycle || [];
+      if (changes.length) {
+        capNote.textContent = "STARs revised this CAP cycle at your Canadian airports: " + changes.map(formatCapChange).join("; ") + ". Check those plates before you fly them.";
+        capNote.classList.remove("hidden");
+      } else {
+        capNote.classList.add("hidden");
+      }
+    } else {
+      capEl.textContent = "";
+      capNote.classList.add("hidden");
+    }
+    if (expiredBits.length) {
+      warn.textContent = expiredBits.join(" ") + " Restrictions may be out of date. Refresh when you can get online.";
+      warn.classList.remove("hidden");
+    } else {
+      warn.classList.add("hidden");
+    }
+  }
+
+  function onAirportTyped(commit) {
+    const raw = $("arrAirport").value.trim().toUpperCase();
+    $("arrAirport").value = raw;
+    if (!commit && raw === (state.arrival.airport || "")) return;
+    if (raw === (state.arrival.airport || "") && !commit) return;
+    const changed = raw !== (state.arrival.airport || "");
+    state.arrival.airport = raw;
+    if (changed) {
+      state.arrival.star = "";
+      state.arrival.trans = "";
+      state.arrival.rwy = "";
+    }
+    paintArrival();
+    if (commit && raw) showCanadaNote(raw);
+    else if (!raw) { $("arrivalFlags").classList.add("hidden"); $("arrivalFlags").textContent = ""; }
+    save();
+  }
+
+  $("arrAirport").addEventListener("input", () => onAirportTyped(false));
+  $("arrAirport").addEventListener("change", () => onAirportTyped(true));
+  $("arrStar").addEventListener("change", () => {
+    state.arrival.star = $("arrStar").value;
+    state.arrival.trans = "";
+    state.arrival.rwy = "";
+    paintArrival();
+    save();
+  });
+  $("arrTrans").addEventListener("change", () => {
+    state.arrival.trans = $("arrTrans").value;
+    paintArrival();
+    save();
+  });
+  $("arrRwy").addEventListener("change", () => {
+    state.arrival.rwy = $("arrRwy").value;
+    paintArrival();
+    save();
+  });
+  $("fillArrival").addEventListener("click", () => {
+    if (!cifpStars) return;
+    const apt = (state.arrival.airport || "").toUpperCase();
+    const starId = state.arrival.star;
+    if (!apt || !starId) return;
+    try {
+      const arrival = Cifp.assembleArrival(cifpStars, apt, starId, state.arrival.trans, state.arrival.rwy);
+      if (!arrival.entry.length) throw new Error("That arrival has no usable fixes.");
+      state.waypoints = Cifp.withPublished(arrival.entry);
+      state.sampleLoaded = false;
+      const notes = [];
+      if (arrival.end_of_star) notes.push("Waypoint 1 is " + arrival.end_of_star + ", the end of the STAR.");
+      if (arrival.flags && arrival.flags.length) notes.push(arrival.flags.join(" "));
+      const starObj = apt && cifpStars[apt] ? cifpStars[apt][starId] : null;
+      if (starObj && starObj.chart_extracted) {
+        notes.push("Filled from the NAV CANADA CAP plate (chart-extracted, cycle " + (starObj.cycle || (canadaManifest && canadaManifest.cycle) || "") + "). Check every restriction and distance against your chart.");
+      } else {
+        notes.push("Filled from FAA CIFP. Check every restriction and distance against your chart.");
+      }
+      $("arrivalFlags").textContent = notes.join(" ");
+      $("arrivalFlags").classList.remove("hidden");
+      renderWaypoints();
+      save();
+    } catch (err) {
+      $("arrivalFlags").textContent = (err && err.message) ? err.message : String(err);
+      $("arrivalFlags").classList.remove("hidden");
+    }
+  });
+
+  function fillAirportList() {
+    const set = new Set(cifpStars ? Cifp.listAirports(cifpStars) : []);
+    if (canadaManifest && canadaManifest.airports) {
+      Object.keys(canadaManifest.airports).forEach((icao) => set.add(icao));
+    }
+    $("arrAirportList").innerHTML = Array.from(set).sort().map((icao) => `<option value="${icao}"></option>`).join("");
+  }
+
+  function initCifp() {
+    if (!Cifp) {
+      $("cifpCycle").textContent = "STAR fill is unavailable in this copy of the app. Manual entry still works.";
+      return;
+    }
+    const faa = Cifp.loadBundle("cifp").then((bundle) => {
+      cifpStars = bundle.stars;
+      cifpMeta = bundle.meta;
+    }).catch(() => {
+      cifpStars = cifpStars || null;
+    });
+    const can = (Cifp.loadCanadaBundle ? Cifp.loadCanadaBundle("canada") : (Cifp.loadCanadaManifest ? Cifp.loadCanadaManifest("canada").then((m) => ({ manifest: m, stars: {} })) : Promise.reject()))
+      .then((bundle) => {
+        canadaManifest = bundle.manifest || bundle;
+        const caStars = bundle.stars || {};
+        if (caStars && Object.keys(caStars).length) {
+          cifpStars = Object.assign({}, cifpStars || {}, caStars);
+        }
+      })
+      .catch(() => { canadaManifest = null; });
+    Promise.all([faa, can]).then(() => {
+      fillAirportList();
+      showCycle();
+      paintArrival();
+      if (state.arrival && state.arrival.airport) showCanadaNote(state.arrival.airport);
+      if (!cifpMeta && !canadaManifest) {
+        $("cifpCycle").textContent = "Arrival data did not load. You can still enter an arrival manually.";
+      }
+    });
+  }
+  initCifp();
+
+  function showUpdated(ver) {
+    const el = $("updateNote");
+    el.textContent = "Updated to v" + ver;
+    el.classList.add("show");
+  }
+  fetch("version.json", { cache: "no-store" })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((v) => {
+      if (!v || !v.version) return;
+      const last = localStorage.getItem(SEEN);
+      if (last !== v.version) showUpdated(v.version);
+      try { localStorage.setItem(SEEN, v.version); } catch (e) {}
+    })
+    .catch(() => {});
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
+})();
+</script>
+</body>
+</html>
