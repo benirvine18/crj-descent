@@ -274,16 +274,16 @@
   <div id="error" class="error hidden"></div>
   <div id="results" class="hidden" style="margin-top:16px"></div>
 
-  <footer>Planning aid only, based on line technique. Not an approved performance source.<br>Version <span class="ver" id="appVersion">3.1</span></footer>
+  <footer>Planning aid only, based on line technique. Not an approved performance source.<br>Version <span class="ver" id="appVersion">3.2</span></footer>
 
-<script src="planner.js?v=3.1"></script>
-<script src="cifp.js?v=3.1"></script>
+<script src="planner.js?v=3.2"></script>
+<script src="cifp.js?v=3.2"></script>
 <script>
 (function () {
-  const APP_VERSION = "3.1";
+  const APP_VERSION = "3.2";
   const P = globalThis.CRJPlanner;
-  const STORE = "crj-descent-plan-v3.1";
-  const STORE_OLD = ["crj-descent-plan-v3.0", "crj-descent-plan-v2.9", "crj-descent-plan-v2.8", "crj-descent-plan-v2.7", "crj-descent-plan-v2.6", "crj-descent-plan-v2.5", "crj-descent-plan-v2.4", "crj-descent-plan-v2.3", "crj-descent-plan-v2.2", "crj-descent-plan-v2", "crj-descent-plan-v1"];
+  const STORE = "crj-descent-plan-v3.2";
+  const STORE_OLD = ["crj-descent-plan-v3.1", "crj-descent-plan-v3.0", "crj-descent-plan-v2.9", "crj-descent-plan-v2.8", "crj-descent-plan-v2.7", "crj-descent-plan-v2.6", "crj-descent-plan-v2.5", "crj-descent-plan-v2.4", "crj-descent-plan-v2.3", "crj-descent-plan-v2.2", "crj-descent-plan-v2", "crj-descent-plan-v1"];
   const SEEN = "crj-descent-seen-version";
   const $ = (id) => document.getElementById(id);
   $("appVersion").textContent = APP_VERSION;

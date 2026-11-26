@@ -1,5 +1,5 @@
 /* CRJ descent planner — network-first so a new deploy loads on the next online open. */
-const CACHE = "crj-descent-v3.1-classic";
+const CACHE = "crj-descent-v3.2-classic";
 const PRECACHE = [
   "./",
   "./index.html",
